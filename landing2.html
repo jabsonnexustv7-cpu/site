@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>NOME DA SUA EMPRESA - Internet Fibra Óptica</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Planos de Internet Fibra Óptica com alta velocidade, estabilidade e Wi-Fi grátis. Confira as ofertas especiais da NOME DA SUA EMPRESA.">
+  <style>
+    :root {
+      --blue-dark: #021529;
+      --blue: #004f9e;
+      --blue-light: #0f6fd1;
+      --accent: #00c853;
+      --bg: #020617;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --radius-lg: 18px;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #0b1430 0, #020617 45%, #000 100%);
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 16px 16px 40px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 8px 0 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top left, #1d4ed8, #0ea5e9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 20px;
+      color: #021529;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.8);
+    }
+
+    .logo-text-title {
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .logo-text-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .top-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: var(--muted);
+    }
+
+    .btn-top-whatsapp {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: none;
+      background: #22c55e;
+      color: #022c22;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(34, 197, 94, 0.4);
+    }
+
+    .btn-top-whatsapp span {
+      font-size: 14px;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 28px;
+      align-items: flex-start;
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 870px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(96, 165, 250, 0.8);
+      background: rgba(15, 23, 42, 0.8);
+      font-size: 11px;
+      color: #bfdbfe;
+      margin-bottom: 10px;
+    }
+
+    .hero-eyebrow span {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #22c55e, #4ade80);
+      color: #022c22;
+      font-weight: 600;
+    }
+
+    h1.hero-title {
+      font-size: clamp(26px, 3.4vw, 34px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+
+    .hero-title span.highlight {
+      color: #38bdf8;
+    }
+
+    .hero-subtitle {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 38rem;
+      margin-bottom: 14px;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+      font-size: 11px;
+    }
+
+    .hero-badge {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: #e5e7eb;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 20px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #22c55e, #4ade80);
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      color: #022c22;
+      text-decoration: none;
+      box-shadow: 0 16px 34px rgba(34, 197, 94, 0.45);
+      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.1s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+      box-shadow: 0 20px 40px rgba(34, 197, 94, 0.55);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      border: 1px dashed rgba(148, 163, 184, 0.7);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .cta-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .hero-icons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .hero-icon-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-icon-item span.icon {
+      font-size: 14px;
+    }
+
+    .card-highlight {
+      background: radial-gradient(circle at top left, #0f172a, #020617);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(96, 165, 250, 0.8);
+      padding: 18px 18px 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-tag {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #bfdbfe;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+
+    .card-plan-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .card-offer-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .price-line {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 2px;
+    }
+
+    .price-line span.value {
+      font-size: 26px;
+      font-weight: 800;
+    }
+
+    .price-line span.period {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .price-small-text {
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .upload-info {
+      font-size: 11px;
+      color: #bbf7d0;
+      margin-bottom: 10px;
+    }
+
+    .features-list {
+      list-style: none;
+      display: grid;
+      gap: 6px;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+
+    .features-list li {
+      display: flex;
+      gap: 6px;
+    }
+
+    .features-list li span {
+      font-size: 12px;
+      margin-top: 1px;
+    }
+
+    .btn-ghost {
+      width: 100%;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-size: 13px;
+      color: #e5e7eb;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .legal-note {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    section {
+      margin-bottom: 32px;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .section-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 18px;
+      max-width: 40rem;
+    }
+
+    /* ===========================
+       SEÇÃO DE PLANOS ESTILO MHNET
+       =========================== */
+
+    .plans-section-wrapper {
+      margin: 32px 0;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.75);
+    }
+
+    .plans-strip {
+      background: #0050d7;
+      padding: 26px 18px 40px;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    .plans-strip-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 22px;
+    }
+
+    .plans-cards-row {
+      max-width: 980px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .plans-cards-row {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .plan-card-hero {
+      background: #ffffff;
+      color: #111827;
+      border-radius: 20px;
+      padding: 0 0 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .plan-card-hero-top {
+      background: linear-gradient(90deg, #ff9800, #ff4081);
+      color: #ffffff;
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      padding: 8px 12px;
+      text-align: center;
+    }
+
+    .plan-card-hero-body {
+      padding: 16px 18px 18px;
+    }
+
+    .plan-card-hero-speed {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .plan-card-hero-sub {
+      font-size: 12px;
+      color: #4b5563;
+      margin-bottom: 10px;
+    }
+
+    .plan-card-hero-price-label {
+      font-size: 11px;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+
+    .plan-card-hero-price-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    .plan-card-hero-price-line span.currency {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .plan-card-hero-price-line span.value {
+      font-size: 26px;
+      font-weight: 800;
+    }
+
+    .plan-card-hero-price-line span.period {
+      font-size: 12px;
+      color: #4b5563;
+    }
+
+    .plan-card-hero-note {
+      font-size: 11px;
+      color: #6b7280;
+      margin-bottom: 10px;
+    }
+
+    .plan-card-hero-list {
+      list-style: none;
+      padding-left: 0;
+      margin: 0 0 16px;
+      font-size: 12px;
+      color: #374151;
+    }
+
+    .plan-card-hero-list li {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .plan-card-hero-list li span.dot {
+      margin-top: 4px;
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #4f46e5;
+    }
+
+    .plan-card-hero-btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      margin-top: 4px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: none;
+      background: #4338ca;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+    }
+
+    .plan-card-hero-btn:hover {
+      filter: brightness(1.05);
+    }
+
+    .plans-strip-legal {
+      font-size: 11px;
+      color: #e5e7eb;
+      margin-top: 16px;
+    }
+
+    /* ===== outras seções ===== */
+
+    .adv-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    @media (max-width: 870px) {
+      .adv-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 520px) {
+      .adv-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .adv-item {
+      background: rgba(15, 23, 42, 0.92);
+      border-radius: 16px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 12px;
+      font-size: 12px;
+    }
+
+    .adv-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top left, #0ea5e9, #1d4ed8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .adv-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .adv-text {
+      color: var(--muted);
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 870px) {
+      .faq-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .faq-item {
+      border-radius: 14px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 10px 12px;
+      font-size: 12px;
+    }
+
+    .faq-q {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .faq-a {
+      color: var(--muted);
+    }
+
+    .coverage-box {
+      background: rgba(15, 23, 42, 0.92);
+      border-radius: 16px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 14px 14px 16px;
+      font-size: 12px;
+    }
+
+    .coverage-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .coverage-form input {
+      flex: 1;
+      min-width: 120px;
+      padding: 8px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(75, 85, 99, 0.9);
+      background: #020617;
+      color: var(--text);
+      font-size: 12px;
+    }
+
+    .coverage-form button {
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #0ea5e9, #1d4ed8);
+      color: #e5e7eb;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .cities-list {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .cities-list strong {
+      color: #e5e7eb;
+    }
+
+    footer {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(30, 64, 175, 0.7);
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    footer a {
+      color: var(--muted);
+      border-bottom: 1px dashed rgba(148, 163, 184, 0.5);
+    }
+
+    footer a:hover {
+      color: #e5e7eb;
+      border-bottom-style: solid;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- CABEÇALHO -->
+    <header>
+      <div class="logo">
+        <div class="logo-mark">F</div>
+        <div>
+          <div class="logo-text-title">NOME DA SUA EMPRESA</div>
+          <div class="logo-text-sub">Internet Fibra Óptica</div>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="pill">Central do Assinante (em breve)</div>
+        <a
+          href="https://wa.me/5551999999999?text=Quero%20falar%20sobre%20os%20planos%20de%20internet"
+          class="btn-top-whatsapp"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>💬</span> Vendas WhatsApp
+        </a>
+      </div>
+    </header>
+
+    <!-- HERO + PLANO DESTAQUE -->
+    <main>
+      <section>
+        <div class="hero-eyebrow">
+          Promoção Fibra
+          <span>Instalação grátis</span>
+        </div>
+
+        <h1 class="hero-title">
+          Internet <span class="highlight">fibra óptica</span> com velocidade e estabilidade para sua casa.
+        </h1>
+
+        <p class="hero-subtitle">
+          Tenha conexão rápida para assistir filmes, jogar online, estudar e trabalhar de casa sem travar.
+          Planos com Wi-Fi potente, suporte local e condição especial para novos assinantes.
+        </p>
+
+        <div class="hero-badges">
+          <div class="hero-badge">Wi-Fi de alta performance incluso</div>
+          <div class="hero-badge">Planos 100% fibra até o modem</div>
+          <div class="hero-badge">Ofertas válidas para pagamento em dia</div>
+        </div>
+
+        <div class="cta-row">
+          <a
+            href="https://wa.me/5551999999999?text=Quero%20contratar%20um%20plano%20de%20internet%20fibra"
+            class="btn-primary"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            ✅ Contratar pelo WhatsApp
+          </a>
+
+          <a href="#planos" class="btn-secondary">
+            Ver todos os planos
+          </a>
+        </div>
+
+        <div class="cta-note">
+          Atendimento rápido em horário comercial. Sem compromisso.
+        </div>
+
+        <div class="hero-icons">
+          <div class="hero-icon-item">
+            <span class="icon">🎬</span>
+            <span>Filmes e séries em Full HD</span>
+          </div>
+          <div class="hero-icon-item">
+            <span class="icon">🎮</span>
+            <span>Jogos online com baixa latência</span>
+          </div>
+          <div class="hero-icon-item">
+            <span class="icon">☁️</span>
+            <span>Downloads e uploads estáveis</span>
+          </div>
+          <div class="hero-icon-item">
+            <span class="icon">📶</span>
+            <span>Wi-Fi forte em toda a casa*</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- CARD DESTAQUE (PLANO PRINCIPAL) -->
+      <section>
+        <div class="card-highlight">
+          <div class="card-tag">Plano em destaque</div>
+          <div class="card-plan-name">500 Mega Fibra</div>
+          <div class="card-offer-label">Perfeito para família conectada</div>
+
+          <div class="price-line">
+            <span class="value">R$ 99,90</span>
+            <span class="period>/mês</span>
+          </div>
+
+          <div class="price-small-text">
+            No débito automático ou boleto em dia. Instalação grátis para aprovação sem restrições.
+          </div>
+
+          <div class="upload-info">
+            Upload turbinado para chamadas de vídeo, jogos e envio de arquivos.
+          </div>
+
+          <ul class="features-list">
+            <li><span>✓</span><div>Wi-Fi de alta velocidade incluso no plano.</div></li>
+            <li><span>✓</span><div>100% fibra óptica até o modem da sua casa.</div></li>
+            <li><span>✓</span><div>Suporte técnico especializado na região.</div></li>
+            <li><span>✓</span><div>Sem franquia de dados: navegue à vontade.</div></li>
+          </ul>
+
+          <a
+            href="https://wa.me/5551999999999?text=Quero%20contratar%20o%20plano%20500%20Mega%20Fibra"
+            class="btn-primary"
+            style="width:100%; justify-content:center; margin-bottom:6px;"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            💬 Quero este plano
+          </a>
+
+          <a href="#planos" class="btn-ghost">Ver outras opções de planos</a>
+
+          <div class="legal-note">
+            *A cobertura do sinal Wi-Fi pode variar conforme o tamanho do imóvel, paredes e interferências.
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- PLANOS ESTILO MHNET -->
+    <section id="planos">
+      <div class="plans-section-wrapper">
+        <div class="plans-strip">
+          <div class="plans-strip-title">Planos de Internet Fibra</div>
+
+          <div class="plans-cards-row">
+            <!-- CARD 500 MEGA -->
+            <div class="plan-card-hero">
+              <div class="plan-card-hero-top">Instalação grátis</div>
+              <div class="plan-card-hero-body">
+                <div class="plan-card-hero-speed">500 Mega</div>
+                <div class="plan-card-hero-sub">Para casas com vários dispositivos conectados.</div>
+
+                <div class="plan-card-hero-price-label">por apenas</div>
+                <div class="plan-card-hero-price-line">
+                  <span class="currency">R$</span>
+                  <span class="value">99,90</span>
+                  <span class="period>/mês</span>
+                </div>
+
+                <div class="plan-card-hero-note">
+                  Wi-Fi de alta velocidade incluso · 100% fibra óptica · Upload reforçado.
+                </div>
+
+                <ul class="plan-card-hero-list">
+                  <li><span class="dot"></span><span>Wi-Fi de alta velocidade.</span></li>
+                  <li><span class="dot"></span><span>100% fibra óptica até o modem.</span></li>
+                  <li><span class="dot"></span><span>Ideal para até 3 TVs + vários aparelhos.</span></li>
+                </ul>
+
+                <a
+                  href="https://wa.me/5551999999999?text=Quero%20contratar%20o%20plano%20500%20Mega"
+                  class="plan-card-hero-btn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Contratar
+                </a>
+              </div>
+            </div>
+
+            <!-- CARD 400 MEGA -->
+            <div class="plan-card-hero">
+              <div class="plan-card-hero-top">Instalação grátis</div>
+              <div class="plan-card-hero-body">
+                <div class="plan-card-hero-speed">400 Mega</div>
+                <div class="plan-card-hero-sub">Plano econômico para quem quer navegar sem travar.</div>
+
+                <div class="plan-card-hero-price-label">por apenas</div>
+                <div class="plan-card-hero-price-line">
+                  <span class="currency">R$</span>
+                  <span class="value">89,90</span>
+                  <span class="period>/mês</span>
+                </div>
+
+                <div class="plan-card-hero-note">
+                  Perfeito para uso diário, estudos, redes sociais e streaming.
+                </div>
+
+                <ul class="plan-card-hero-list">
+                  <li><span class="dot"></span><span>Wi-Fi incluso no plano.</span></li>
+                  <li><span class="dot"></span><span>100% fibra óptica.</span></li>
+                  <li><span class="dot"></span><span>Suporte local quando precisar.</span></li>
+                </ul>
+
+                <a
+                  href="https://wa.me/5551999999999?text=Quero%20contratar%20o%20plano%20400%20Mega"
+                  class="plan-card-hero-btn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Contratar
+                </a>
+              </div>
+            </div>
+
+            <!-- CARD 700 MEGA -->
+            <div class="plan-card-hero">
+              <div class="plan-card-hero-top">Instalação grátis</div>
+              <div class="plan-card-hero-body">
+                <div class="plan-card-hero-speed">700 Mega</div>
+                <div class="plan-card-hero-sub">Máxima performance para games e streaming pesado.</div>
+
+                <div class="plan-card-hero-price-label">por apenas</div>
+                <div class="plan-card-hero-price-line">
+                  <span class="currency">R$</span>
+                  <span class="value">149,90</span>
+                  <span class="period>/mês</span>
+                </div>
+
+                <div class="plan-card-hero-note">
+                  Ideal para famílias grandes, gamers e quem trabalha 100% online.
+                </div>
+
+                <ul class="plan-card-hero-list">
+                  <li><span class="dot"></span><span>Alta velocidade para vários aparelhos.</span></li>
+                  <li><span class="dot"></span><span>Upload reforçado para chamadas e lives.</span></li>
+                  <li><span class="dot"></span><span>Experiência premium de navegação.</span></li>
+                </ul>
+
+                <a
+                  href="https://wa.me/5551999999999?text=Quero%20contratar%20o%20plano%20700%20Mega"
+                  class="plan-card-hero-btn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Contratar
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="plans-strip-legal">
+            Ofertas válidas para pagamento em dia. Instalação grátis para pedidos aprovados sem restrições e dentro da área de cobertura.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERNET FIBRA É VELOCIDADE E ESTABILIDADE -->
+    <section>
+      <h2 class="section-title">Internet Fibra é velocidade e estabilidade</h2>
+      <p class="section-sub">
+        Com a NOME DA SUA EMPRESA você tem conexão estável para navegar, assistir, jogar e trabalhar sem dor de cabeça.
+        Tecnologia em fibra óptica do poste até o modem da sua casa.
+      </p>
+
+      <div class="adv-grid">
+        <div class="adv-item">
+          <div class="adv-icon">📺</div>
+          <div class="adv-title">Assista sem travar</div>
+          <div class="adv-text">Filmes, séries e lives em alta definição, mesmo com vários aparelhos conectados.</div>
+        </div>
+        <div class="adv-item">
+          <div class="adv-icon">🎮</div>
+          <div class="adv-title">Jogue online com baixa latência</div>
+          <div class="adv-text">Ping mais baixo e conexão estável para suas partidas rendendo mais.</div>
+        </div>
+        <div class="adv-item">
+          <div class="adv-icon">💻</div>
+          <div class="adv-title">Home office sem falhas</div>
+          <div class="adv-text">Reuniões em vídeo, envio de arquivos e acesso remoto com qualidade.</div>
+        </div>
+        <div class="adv-item">
+          <div class="adv-icon">☁️</div>
+          <div class="adv-title">Downloads e uploads confiáveis</div>
+          <div class="adv-text">Backup em nuvem, envio de fotos, vídeos e documentos sem interromper ninguém.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COBERTURA + CIDADES -->
+    <section>
+      <div class="faq-grid">
+        <div class="coverage-box">
+          <h3 class="section-title" style="font-size:16px; margin-bottom:6px;">Consulte a cobertura</h3>
+          <p>
+            Informe seu CEP e número do endereço para confirmar se a fibra da NOME DA SUA EMPRESA já chega até você.
+          </p>
+
+          <form
+            class="coverage-form"
+            onsubmit="event.preventDefault(); (function(){
+              var cep = document.getElementById('cep').value || '';
+              var numero = document.getElementById('numero').value || '';
+              var msg = 'Olá, quero saber se há cobertura de fibra no meu endereço. CEP: ' + cep + ', Número: ' + numero;
+              var url = 'https://wa.me/5551999999999?text=' + encodeURIComponent(msg);
+              window.open(url, '_blank');
+            })();"
+          >
+            <input id="cep" type="text" placeholder="Digite seu CEP" required />
+            <input id="numero" type="text" placeholder="Número" required />
+            <button type="submit">Consultar via WhatsApp</button>
+          </form>
+
+          <p style="margin-top:10px; font-size:11px; color:var(--muted);">
+            Caso prefira, envie seu endereço direto no WhatsApp que a nossa equipe confere a viabilidade para você.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="section-title" style="font-size:16px; margin-bottom:6px;">Cidades atendidas</h3>
+          <p class="cities-list">
+            A NOME DA SUA EMPRESA já está presente em diversas cidades da região, levando internet de alta qualidade
+            para milhares de clientes.
+          </p>
+          <p class="cities-list" style="margin-top:8px;">
+            <strong>Exemplos de cidades atendidas:</strong><br>
+            Canoas · Gravataí · Cachoeirinha · Nova Santa Rita · Esteio · Sapucaia do Sul · São Leopoldo · Novo Hamburgo ·
+            Capão da Canoa · Venâncio Aires · Lajeado · Estrela · Santa Cruz do Sul · Santa Maria · Caxias do Sul e outras.
+          </p>
+          <p class="cities-list" style="margin-top:8px;">
+            Clique no botão abaixo e informe sua cidade para saber os planos disponíveis:
+          </p>
+          <a
+            href="https://wa.me/5551999999999?text=Quero%20saber%20quais%20planos%20voc%C3%AAs%20t%C3%AAm%20na%20minha%20cidade"
+            class="btn-primary"
+            style="margin-top:10px; font-size:12px; padding:8px 16px;"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            🔎 Ver planos na minha cidade
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section>
+      <div class="faq-grid">
+        <div>
+          <h2 class="section-title">Perguntas frequentes</h2>
+          <p class="section-sub">
+            Se ainda ficou alguma dúvida, você pode falar com a nossa equipe pelo WhatsApp ou conferir as respostas abaixo.
+          </p>
+          <a
+            href="https://wa.me/5551999999999?text=Tenho%20d%C3%BAvidas%20sobre%20os%20planos%20de%20internet"
+            class="btn-primary"
+            style="font-size:13px; padding-inline:18px;"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            💬 Tirar dúvidas no WhatsApp
+          </a>
+        </div>
+
+        <div class="faq-list">
+          <div class="faq-item">
+            <div class="faq-q">Os planos são 100% fibra óptica?</div>
+            <div class="faq-a">
+              Sim, trabalhamos com rede em fibra óptica até o modem do cliente, garantindo mais estabilidade e velocidade.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q">Tem fidelidade ou multa de cancelamento?</div>
+            <div class="faq-a">
+              Nossas condições podem variar conforme o plano e a cidade. Fale com a equipe comercial para ver a melhor opção para você.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q">Quanto tempo leva para instalar?</div>
+            <div class="faq-a">
+              Após aprovação do cadastro e viabilidade técnica, geralmente a instalação é agendada em poucos dias úteis.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-q">Qual forma de pagamento é aceita?</div>
+            <div class="faq-a">
+              Trabalhamos com boleto bancário, débito automático e/ou PIX recorrente, conforme disponibilidade na sua região.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RODAPÉ -->
+    <footer>
+      <span>© 2025 · NOME DA SUA EMPRESA · Todos os direitos reservados.</span>
+      <span>
+        <a href="#">Política de privacidade</a> ·
+        <a href="#">Termos de uso</a>
+      </span>
+    </footer>
+  </div>
+</body>
+</html>
