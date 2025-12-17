@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Consulta de Cobertura — CEP e Fachada</title>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body { margin: 0; background:#f6f7f9; }
+    .wrap { max-width: 860px; margin: 28px auto; padding: 0 16px; }
+    .card { background:#fff; border:1px solid #e6e8ee; border-radius:12px; padding:16px; box-shadow: 0 2px 10px rgba(0,0,0,.04); }
+    h1 { font-size: 18px; margin: 0 0 10px; }
+    .muted { font-size:12px; color:#6b7280; }
+    .tabs { display:flex; gap:8px; margin: 12px 0; }
+    .tab { border:1px solid #d7dbe6; background:#fff; padding:10px 12px; border-radius:10px; cursor:pointer; font-weight:700; }
+    .tab.active { border-color:#111827; }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+    label { display:block; font-size:12px; color:#4b5563; margin:10px 0 6px; }
+    input, textarea { width:100%; padding:10px; border:1px solid #d7dbe6; border-radius:10px; font-size:14px; background:#fff; }
+    textarea { min-height: 90px; resize: vertical; }
+    .actions { margin-top:14px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    button { padding:10px 14px; border-radius:10px; border:1px solid #111827; background:#111827; color:#fff; font-weight:800; cursor:pointer; }
+    button.secondary { background:#fff; color:#111827; border-color:#d7dbe6; }
+    .result { margin-top:12px; padding:12px; border-radius:10px; background:#f3f4f6; border:1px solid #e5e7eb; }
+    .hide { display:none; }
+    .ok { color:#065f46; font-weight:900; }
+    .bad { color:#991b1b; font-weight:900; }
+    .spinner { width:14px; height:14px; border:2px solid #cbd5e1; border-top-color:#111827; border-radius:50%; animation:spin 0.7s linear infinite; display:inline-block; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .pill { display:inline-block; padding:4px 8px; border-radius:999px; background:#111827; color:#fff; font-size:12px; font-weight:800; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Consulta de Cobertura</h1>
+      <div class="muted">Consulta por CEP (automática) e envio de Fachada (foto) para análise.</div>
+
+      <div class="tabs">
+        <button class="tab active" id="tabCep" type="button">Por CEP</button>
+        <button class="tab" id="tabFachada" type="button">Por Fachada</button>
+      </div>
+
+      <!-- CEP -->
+      <div id="paneCep">
+        <div class="grid">
+          <div>
+            <label>CEP</label>
+            <input id="cep" inputmode="numeric" placeholder="Ex.: 94050-090" maxlength="9" />
+          </div>
+          <div>
+            <label>Número</label>
+            <input id="numero" inputmode="numeric" placeholder="Ex.: 123" />
+          </div>
+        </div>
+
+        <div class="grid">
+          <div>
+            <label>Complemento (opcional)</label>
+            <input id="complemento" placeholder="Apto, casa, bloco..." />
+          </div>
+          <div>
+            <label>Referência (opcional)</label>
+            <input id="referencia" placeholder="Perto de..." />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button type="button" id="btnConsultarCep">Consultar</button>
+          <button type="button" class="secondary" id="btnLimparCep">Limpar</button>
+          <span class="muted" id="statusCep"></span>
+        </div>
+
+        <div class="result hide" id="resCep"></div>
+      </div>
+
+      <!-- FACHADA -->
+      <div id="paneFachada" class="hide">
+        <div class="grid">
+          <div>
+            <label>CEP (se souber)</label>
+            <input id="cep2" inputmode="numeric" placeholder="Ex.: 94050-090" maxlength="9" />
+          </div>
+          <div>
+            <label>Número (se souber)</label>
+            <input id="numero2" inputmode="numeric" placeholder="Ex.: 123" />
+          </div>
+        </div>
+
+        <label>Foto da fachada (jpg/png/webp)</label>
+        <input id="foto" type="file" accept="image/*" />
+
+        <label>Observações</label>
+        <textarea id="obs" placeholder="Ex.: portão preto, placa 123, esquina com Rua X..."></textarea>
+
+        <div class="actions">
+          <button type="button" id="btnEnviarFachada">Enviar</button>
+          <button type="button" class="secondary" id="btnLimparFachada">Limpar</button>
+          <span class="muted" id="statusFachada"></span>
+        </div>
+
+        <div class="result hide" id="resFachada"></div>
+      </div>
+
+      <div class="muted" style="margin-top:14px;">
+        Dica: se o endpoint bloquear por CORS, você usa o Apps Script como proxy (não expõe segredos no front).
+      </div>
+    </div>
+  </div>
+
+<script>
+  // BACKEND PRINCIPAL
+  const API_URL = "https://us-central1-webturbo-crm.cloudfunctions.net/consultarCobertura";
+
+  const tabCep = document.getElementById("tabCep");
+  const tabFachada = document.getElementById("tabFachada");
+  const paneCep = document.getElementById("paneCep");
+  const paneFachada = document.getElementById("paneFachada");
+
+  function setTab(which) {
+    const isCep = which === "cep";
+    tabCep.classList.toggle("active", isCep);
+    tabFachada.classList.toggle("active", !isCep);
+    paneCep.classList.toggle("hide", !isCep);
+    paneFachada.classList.toggle("hide", isCep);
+  }
+  tabCep.addEventListener("click", () => setTab("cep"));
+  tabFachada.addEventListener("click", () => setTab("fachada"));
+
+  function onlyDigits(s){ return (s||"").replace(/\D+/g,""); }
+  function formatCep(v){
+    const d = onlyDigits(v).slice(0,8);
+    if (d.length <= 5) return d;
+    return d.slice(0,5) + "-" + d.slice(5);
+  }
+  ["cep","cep2"].forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener("input", () => el.value = formatCep(el.value));
+  });
+
+  async function fileToBase64(file){
+    return new Promise((resolve,reject)=>{
+      const r = new FileReader();
+      r.onload = () => resolve(r.result);
+      r.onerror = reject;
+      r.readAsDataURL(file);
+    });
+  }
+  function show(el, html){ el.classList.remove("hide"); el.innerHTML = html; }
+  function hide(el){ el.classList.add("hide"); el.innerHTML = ""; }
+
+  function renderResultadoGenerico(data){
+    // Padroniza o que aparecer mesmo se o JSON variar
+    const protocolo = data.protocolo || data.ticket || data.id || "";
+    const cobertura = (data.cobertura === true || data.coverage === true) ? true :
+                      (data.cobertura === false || data.coverage === false) ? false : null;
+
+    const status = data.status || data.resultado || data.msg || (cobertura === true ? "COM COBERTURA" :
+                  cobertura === false ? "SEM COBERTURA" : "EM ANÁLISE");
+
+    const badgeClass = cobertura === true ? "ok" : (cobertura === false ? "bad" : "");
+    const detalhe = data.detalhe || data.detalhes || data.motivo || data.obs || "";
+
+    return `
+      <div><span class="pill">Resultado</span> <span class="${badgeClass}">${status}</span></div>
+      ${detalhe ? `<div style="margin-top:6px;" class="muted">${detalhe}</div>` : ""}
+      ${protocolo ? `<div style="margin-top:6px;" class="muted">Protocolo: <strong>${protocolo}</strong></div>` : ""}
+    `;
+  }
+
+  // CEP
+  const btnConsultarCep = document.getElementById("btnConsultarCep");
+  const btnLimparCep = document.getElementById("btnLimparCep");
+  const statusCep = document.getElementById("statusCep");
+  const resCep = document.getElementById("resCep");
+
+  btnLimparCep.addEventListener("click", () => {
+    ["cep","numero","complemento","referencia"].forEach(id => document.getElementById(id).value = "");
+    statusCep.textContent = "";
+    hide(resCep);
+  });
+
+  btnConsultarCep.addEventListener("click", async () => {
+    hide(resCep);
+    const cep = onlyDigits(document.getElementById("cep").value);
+    const numero = onlyDigits(document.getElementById("numero").value);
+    const complemento = document.getElementById("complemento").value.trim();
+    const referencia = document.getElementById("referencia").value.trim();
+
+    if (cep.length !== 8) { show(resCep, `<span class="bad">CEP inválido.</span>`); return; }
+    if (!numero) { show(resCep, `<span class="bad">Número obrigatório.</span>`); return; }
+
+    statusCep.innerHTML = `<span class="spinner"></span> Consultando...`;
+
+    try {
+      const r = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify({ tipo:"cep", cep, numero, complemento, referencia })
+      });
+
+      const text = await r.text();
+      let data;
+      try { data = JSON.parse(text); } catch { data = { ok:false, msg:text }; }
+
+      statusCep.textContent = "";
+
+      if (!r.ok || data.ok === false) {
+        show(resCep, `<span class="bad">Falha:</span> ${data.msg || "erro no backend"}`);
+        return;
+      }
+
+      show(resCep, renderResultadoGenerico(data));
+
+    } catch (e) {
+      statusCep.textContent = "";
+      show(resCep, `<span class="bad">Erro:</span> ${String(e.message || e)}`);
+    }
+  });
+
+  // FACHADA
+  const btnEnviarFachada = document.getElementById("btnEnviarFachada");
+  const btnLimparFachada = document.getElementById("btnLimparFachada");
+  const statusFachada = document.getElementById("statusFachada");
+  const resFachada = document.getElementById("resFachada");
+
+  btnLimparFachada.addEventListener("click", () => {
+    ["cep2","numero2","obs"].forEach(id => document.getElementById(id).value = "");
+    document.getElementById("foto").value = "";
+    statusFachada.textContent = "";
+    hide(resFachada);
+  });
+
+  btnEnviarFachada.addEventListener("click", async () => {
+    hide(resFachada);
+
+    const cep = onlyDigits(document.getElementById("cep2").value);
+    const numero = onlyDigits(document.getElementById("numero2").value);
+    const obs = document.getElementById("obs").value.trim();
+    const file = document.getElementById("foto").files?.[0];
+
+    if (!file) { show(resFachada, `<span class="bad">Envie a foto da fachada.</span>`); return; }
+    if (file.size > 6 * 1024 * 1024) { show(resFachada, `<span class="bad">Arquivo muito grande.</span> Até 6MB.`); return; }
+
+    statusFachada.innerHTML = `<span class="spinner"></span> Enviando...`;
+
+    try {
+      const foto_base64 = await fileToBase64(file);
+
+      const r = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify({
+          tipo:"fachada",
+          cep: cep || null,
+          numero: numero || null,
+          obs,
+          foto_base64,
+          foto_nome: file.name,
+          foto_tipo: file.type
+        })
+      });
+
+      const text = await r.text();
+      let data;
+      try { data = JSON.parse(text); } catch { data = { ok:false, msg:text }; }
+
+      statusFachada.textContent = "";
+
+      if (!r.ok || data.ok === false) {
+        show(resFachada, `<span class="bad">Falha:</span> ${data.msg || "erro no backend"}`);
+        return;
+      }
+
+      show(resFachada, renderResultadoGenerico(data));
+
+    } catch (e) {
+      statusFachada.textContent = "";
+      show(resFachada, `<span class="bad">Erro:</span> ${String(e.message || e)}`);
+    }
+  });
+</script>
+</body>
+</html>
