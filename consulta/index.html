@@ -25,16 +25,19 @@
     .hide { display:none; }
     .ok { color:#065f46; font-weight:900; }
     .bad { color:#991b1b; font-weight:900; }
+    .warn { color:#92400e; font-weight:900; }
     .spinner { width:14px; height:14px; border:2px solid #cbd5e1; border-top-color:#111827; border-radius:50%; animation:spin 0.7s linear infinite; display:inline-block; }
     @keyframes spin { to { transform:rotate(360deg); } }
     .pill { display:inline-block; padding:4px 8px; border-radius:999px; background:#111827; color:#fff; font-size:12px; font-weight:800; }
+    a { color:#111827; }
+    code { background:#eef2ff; padding:2px 6px; border-radius:6px; }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card">
       <h1>Consulta de Cobertura</h1>
-      <div class="muted">Consulta por CEP (automática) e envio de Fachada (foto) para análise.</div>
+      <div class="muted">Consulta por CEP (Firestore) e envio de Fachada (Storage) para análise.</div>
 
       <div class="tabs">
         <button class="tab active" id="tabCep" type="button">Por CEP</button>
@@ -46,11 +49,11 @@
         <div class="grid">
           <div>
             <label>CEP</label>
-            <input id="cep" inputmode="numeric" placeholder="Ex.: 94050-090" maxlength="9" />
+            <input id="cep" inputmode="numeric" placeholder="Ex.: 90001-970" maxlength="9" />
           </div>
           <div>
             <label>Número</label>
-            <input id="numero" inputmode="numeric" placeholder="Ex.: 123" />
+            <input id="numero" inputmode="numeric" placeholder="Ex.: 19" />
           </div>
         </div>
 
@@ -79,11 +82,11 @@
         <div class="grid">
           <div>
             <label>CEP (se souber)</label>
-            <input id="cep2" inputmode="numeric" placeholder="Ex.: 94050-090" maxlength="9" />
+            <input id="cep2" inputmode="numeric" placeholder="Ex.: 90001-970" maxlength="9" />
           </div>
           <div>
             <label>Número (se souber)</label>
-            <input id="numero2" inputmode="numeric" placeholder="Ex.: 123" />
+            <input id="numero2" inputmode="numeric" placeholder="Ex.: 19" />
           </div>
         </div>
 
@@ -91,7 +94,7 @@
         <input id="foto" type="file" accept="image/*" />
 
         <label>Observações</label>
-        <textarea id="obs" placeholder="Ex.: portão preto, placa 123, esquina com Rua X..."></textarea>
+        <textarea id="obs" placeholder="Ex.: portão preto, placa 19, esquina com Rua X..."></textarea>
 
         <div class="actions">
           <button type="button" id="btnEnviarFachada">Enviar</button>
@@ -103,15 +106,49 @@
       </div>
 
       <div class="muted" style="margin-top:14px;">
-        Esta página usa Apps Script como proxy para evitar bloqueio por CORS.
+        Padrão do Firestore: coleção <code>algar_enderecos</code> e docId <code>CEP|NUMERO</code> (ex.: <code>90001970|19</code>).
       </div>
     </div>
   </div>
 
-<script>
-  // ✅ PROXY (Apps Script) — evita CORS no navegador
-  const API_URL = "https://script.google.com/macros/s/AKfycbwKOzJIP7vQAkDgR99v6boskclJc47lBaMFaAANklS4Gkq22rszhElqRNlkyNwhe2I-/exec";
+<script type="module">
+  // ---------------------------
+  // Firebase SDK (Web v9+ modular)
+  // ---------------------------
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
 
+  // ---------------------------
+  // 🔴 TROQUE pelo config do projeto webturbo-crm
+  // Firebase Console > Project settings > Your apps > Firebase SDK snippet (Config)
+  // ---------------------------
+  const firebaseConfig = {
+    apiKey: "AIzaSyB9nOa8MBenK0Ayp3bwYV-_L2zFoPTwcWI",
+    authDomain: "webturbo-crm.firebaseapp.com",
+    projectId: "webturbo-crm",
+    storageBucket: "webturbo-crm.firebasestorage.app",
+    messagingSenderId: "964927461432",
+    appId: "1:964927461432:web:b3176b7e9f9566f057eecd"
+  };
+
+  // ---------------------------
+  // Firestore/Storage init
+  // ---------------------------
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  // ---------------------------
+  // Convenções do seu banco
+  // ---------------------------
+  const ALGAR_COLLECTION = "algar_enderecos";          // ✅ conforme print
+  const FACHADA_COLLECTION = "solicitacoes_fachada";   // você pode criar
+  const FACHADA_STORAGE_PREFIX = "fachadas";           // pasta no Storage
+
+  // ---------------------------
+  // UI: Tabs
+  // ---------------------------
   const tabCep = document.getElementById("tabCep");
   const tabFachada = document.getElementById("tabFachada");
   const paneCep = document.getElementById("paneCep");
@@ -127,6 +164,9 @@
   tabCep.addEventListener("click", () => setTab("cep"));
   tabFachada.addEventListener("click", () => setTab("fachada"));
 
+  // ---------------------------
+  // Helpers
+  // ---------------------------
   function onlyDigits(s){ return (s||"").replace(/\D+/g,""); }
   function formatCep(v){
     const d = onlyDigits(v).slice(0,8);
@@ -138,55 +178,55 @@
     el.addEventListener("input", () => el.value = formatCep(el.value));
   });
 
-  async function fileToBase64(file){
-    return new Promise((resolve,reject)=>{
-      const r = new FileReader();
-      r.onload = () => resolve(r.result);
-      r.onerror = reject;
-      r.readAsDataURL(file);
-    });
-  }
   function show(el, html){ el.classList.remove("hide"); el.innerHTML = html; }
   function hide(el){ el.classList.add("hide"); el.innerHTML = ""; }
 
-  function renderResultadoGenerico(data){
-    const protocolo = data.protocolo || data.ticket || data.id || "";
-    const cobertura = (data.cobertura === true || data.coverage === true) ? true :
-                      (data.cobertura === false || data.coverage === false) ? false : null;
+  function safeHtml(v){
+    return String(v ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
 
-    const status = data.status || data.resultado || data.msg || (cobertura === true ? "COM COBERTURA" :
-                  cobertura === false ? "SEM COBERTURA" : "EM ANÁLISE");
-
-    const badgeClass = cobertura === true ? "ok" : (cobertura === false ? "bad" : "");
-    const detalhe = data.detalhe || data.detalhes || data.motivo || data.obs || "";
+  function renderCoberturaFromDoc(data){
+    // Se existe doc => "COM COBERTURA"
+    const municipio = safeHtml(data?.municipio || "");
+    const uf = safeHtml(data?.uf || "");
+    const cep = safeHtml(data?.cep || "");
+    const numero = safeHtml(data?.numero || "");
+    const atualizado = data?.atualizado_em ? safeHtml(data.atualizado_em) : "";
 
     return `
-      <div><span class="pill">Resultado</span> <span class="${badgeClass}">${status}</span></div>
-      ${detalhe ? `<div style="margin-top:6px;" class="muted">${detalhe}</div>` : ""}
-      ${protocolo ? `<div style="margin-top:6px;" class="muted">Protocolo: <strong>${protocolo}</strong></div>` : ""}
+      <div>
+        <span class="pill">Resultado</span>
+        <span class="ok">COM COBERTURA</span>
+      </div>
+      <div class="muted" style="margin-top:6px;">
+        Município: <strong>${municipio}</strong> – ${uf}<br>
+        CEP: ${cep} • Número: ${numero}
+        ${atualizado ? `<br>Atualizado em: ${atualizado}` : ""}
+      </div>
     `;
   }
 
-  async function postJson(payload){
-    // O Apps Script pode às vezes retornar HTML em erro; por isso lemos como texto e tentamos JSON.
-    const r = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type":"application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    const text = await r.text();
-    let data;
-    try { data = JSON.parse(text); } catch { data = { ok:false, msg:text }; }
-
-    // Se o Apps Script devolver ok:false, respeitamos.
-    if (!r.ok) {
-      return { ok:false, msg:`HTTP ${r.status}`, raw:data };
-    }
-    return data;
+  function renderSemCobertura(){
+    return `
+      <div>
+        <span class="pill">Resultado</span>
+        <span class="bad">SEM COBERTURA</span>
+      </div>
+      <div class="muted" style="margin-top:6px;">
+        Endereço não encontrado na base da Algar para este CEP/número.<br>
+        Se necessário, use a aba “Por Fachada” para solicitar análise manual.
+      </div>
+    `;
   }
 
-  // CEP
+  // ---------------------------
+  // CEP: consulta Firestore em algar_enderecos/{CEP|NUMERO}
+  // ---------------------------
   const btnConsultarCep = document.getElementById("btnConsultarCep");
   const btnLimparCep = document.getElementById("btnLimparCep");
   const statusCep = document.getElementById("statusCep");
@@ -200,10 +240,9 @@
 
   btnConsultarCep.addEventListener("click", async () => {
     hide(resCep);
+
     const cep = onlyDigits(document.getElementById("cep").value);
     const numero = onlyDigits(document.getElementById("numero").value);
-    const complemento = document.getElementById("complemento").value.trim();
-    const referencia = document.getElementById("referencia").value.trim();
 
     if (cep.length !== 8) { show(resCep, `<span class="bad">CEP inválido.</span>`); return; }
     if (!numero) { show(resCep, `<span class="bad">Número obrigatório.</span>`); return; }
@@ -211,25 +250,28 @@
     statusCep.innerHTML = `<span class="spinner"></span> Consultando...`;
 
     try {
-      // Mantém o contrato: o proxy decide para onde enviar (Cloud Function etc.)
-      const data = await postJson({ tipo:"cep", cep, numero, complemento, referencia });
+      // ✅ ID REAL DO SEU BANCO
+      const docId = `${cep}|${numero}`;
+
+      const snap = await getDoc(doc(db, ALGAR_COLLECTION, docId));
 
       statusCep.textContent = "";
 
-      if (!data || data.ok === false) {
-        show(resCep, `<span class="bad">Falha:</span> ${data?.msg || "erro no backend"}`);
-        return;
+      if (snap.exists()) {
+        show(resCep, renderCoberturaFromDoc(snap.data()));
+      } else {
+        show(resCep, renderSemCobertura());
       }
-
-      show(resCep, renderResultadoGenerico(data));
 
     } catch (e) {
       statusCep.textContent = "";
-      show(resCep, `<span class="bad">Erro:</span> ${String(e.message || e)}`);
+      show(resCep, `<span class="bad">Erro:</span> ${safeHtml(e.message || e)}`);
     }
   });
 
-  // FACHADA
+  // ---------------------------
+  // FACHADA: upload Storage + registrar solicitação no Firestore
+  // ---------------------------
   const btnEnviarFachada = document.getElementById("btnEnviarFachada");
   const btnLimparFachada = document.getElementById("btnLimparFachada");
   const statusFachada = document.getElementById("statusFachada");
@@ -256,30 +298,39 @@
     statusFachada.innerHTML = `<span class="spinner"></span> Enviando...`;
 
     try {
-      const foto_base64 = await fileToBase64(file);
+      const protocolo = `FACH-${new Date().toISOString().replace(/[-:.TZ]/g,"").slice(0,14)}-${Math.random().toString(16).slice(2,8).toUpperCase()}`;
 
-      const data = await postJson({
-        tipo:"fachada",
+      const safeName = (file.name || "fachada").replace(/[^\w.\-]+/g, "_").slice(0,60);
+      const path = `${FACHADA_STORAGE_PREFIX}/${protocolo}/${safeName}`;
+      const storageRef = ref(storage, path);
+
+      // Upload
+      await uploadBytes(storageRef, file, { contentType: file.type || "application/octet-stream" });
+      const fotoUrl = await getDownloadURL(storageRef);
+
+      // Registrar solicitação no Firestore
+      await setDoc(doc(db, FACHADA_COLLECTION, protocolo), {
+        protocolo,
         cep: cep || null,
         numero: numero || null,
-        obs,
-        foto_base64,
-        foto_nome: file.name,
-        foto_tipo: file.type
+        obs: obs || null,
+        fotoUrl,
+        storagePath: path,
+        status: "EM_ANALISE",
+        createdAt: serverTimestamp()
       });
 
       statusFachada.textContent = "";
 
-      if (!data || data.ok === false) {
-        show(resFachada, `<span class="bad">Falha:</span> ${data?.msg || "erro no backend"}`);
-        return;
-      }
-
-      show(resFachada, renderResultadoGenerico(data));
+      show(resFachada, `
+        <div><span class="pill">Status</span> <span class="ok">ENVIADO PARA ANÁLISE</span></div>
+        <div class="muted" style="margin-top:6px;">Protocolo: <strong>${safeHtml(protocolo)}</strong></div>
+        <div class="muted" style="margin-top:6px;">Foto: <a href="${fotoUrl}" target="_blank" rel="noopener">abrir</a></div>
+      `);
 
     } catch (e) {
       statusFachada.textContent = "";
-      show(resFachada, `<span class="bad">Erro:</span> ${String(e.message || e)}`);
+      show(resFachada, `<span class="bad">Erro:</span> ${safeHtml(e.message || e)}`);
     }
   });
 </script>
