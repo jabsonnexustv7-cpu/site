@@ -6,113 +6,27 @@
   <title>Consulta de Cobertura — Algar</title>
 
   <style>
-    :root {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    }
-    body {
-      margin: 0;
-      background: #f6f7f9;
-    }
-    .wrap {
-      max-width: 860px;
-      margin: 28px auto;
-      padding: 0 16px;
-    }
-    .card {
-      background: #fff;
-      border: 1px solid #e6e8ee;
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 2px 10px rgba(0,0,0,.04);
-    }
-    h1 {
-      font-size: 18px;
-      margin: 0 0 6px;
-    }
-    .muted {
-      font-size: 12px;
-      color: #6b7280;
-      margin-bottom: 12px;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    label {
-      display: block;
-      font-size: 12px;
-      color: #4b5563;
-      margin: 10px 0 6px;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #d7dbe6;
-      border-radius: 10px;
-      font-size: 14px;
-      background: #fff;
-    }
-    .actions {
-      margin-top: 14px;
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    button {
-      padding: 10px 14px;
-      border-radius: 10px;
-      border: 1px solid #111827;
-      background: #111827;
-      color: #fff;
-      font-weight: 800;
-      cursor: pointer;
-    }
-    button.secondary {
-      background: #fff;
-      color: #111827;
-      border-color: #d7dbe6;
-    }
-    .result {
-      margin-top: 14px;
-      padding: 12px;
-      border-radius: 10px;
-      background: #f3f4f6;
-      border: 1px solid #e5e7eb;
-    }
-    .hide {
-      display: none;
-    }
-    .ok {
-      color: #065f46;
-      font-weight: 900;
-    }
-    .bad {
-      color: #991b1b;
-      font-weight: 900;
-    }
-    .spinner {
-      width: 14px;
-      height: 14px;
-      border: 2px solid #cbd5e1;
-      border-top-color: #111827;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      display: inline-block;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    .pill {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 999px;
-      background: #111827;
-      color: #fff;
-      font-size: 12px;
-      font-weight: 800;
-    }
+    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body { margin: 0; background: #f6f7f9; }
+    .wrap { max-width: 860px; margin: 28px auto; padding: 0 16px; }
+    .card { background: #fff; border: 1px solid #e6e8ee; border-radius: 12px; padding: 16px; box-shadow: 0 2px 10px rgba(0,0,0,.04); }
+    h1 { font-size: 18px; margin: 0 0 6px; }
+    .muted { font-size: 12px; color: #6b7280; margin-bottom: 12px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    label { display: block; font-size: 12px; color: #4b5563; margin: 10px 0 6px; }
+    input { width: 100%; padding: 10px; border: 1px solid #d7dbe6; border-radius: 10px; font-size: 14px; background: #fff; }
+    input[readonly] { background:#f9fafb; color:#374151; }
+    .actions { margin-top: 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    button { padding: 10px 14px; border-radius: 10px; border: 1px solid #111827; background: #111827; color: #fff; font-weight: 800; cursor: pointer; }
+    button.secondary { background: #fff; color: #111827; border-color: #d7dbe6; }
+    .result { margin-top: 14px; padding: 12px; border-radius: 10px; background: #f3f4f6; border: 1px solid #e5e7eb; }
+    .hide { display: none; }
+    .ok { color: #065f46; font-weight: 900; }
+    .bad { color: #991b1b; font-weight: 900; }
+    .spinner { width: 14px; height: 14px; border: 2px solid #cbd5e1; border-top-color: #111827; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .pill { display: inline-block; padding: 4px 8px; border-radius: 999px; background: #111827; color: #fff; font-size: 12px; font-weight: 800; }
+    .sep { height:1px; background:#eef2f7; margin: 14px 0; }
   </style>
 </head>
 
@@ -121,7 +35,7 @@
     <div class="card">
       <h1>Consulta de Cobertura</h1>
       <div class="muted">
-        Consulta direta no Firestore (base Algar) por CEP + número.
+        Consulta direta no Firestore (base Algar) por CEP + número. Endereço preenchido automaticamente via ViaCEP.
       </div>
 
       <div class="grid">
@@ -135,6 +49,29 @@
         </div>
       </div>
 
+      <!-- ViaCEP preenchimento automático -->
+      <div class="grid">
+        <div>
+          <label>Logradouro (ViaCEP)</label>
+          <input id="logradouro" readonly placeholder="—" />
+        </div>
+        <div>
+          <label>Bairro (ViaCEP)</label>
+          <input id="bairro" readonly placeholder="—" />
+        </div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label>Cidade/UF (ViaCEP)</label>
+          <input id="cidadeuf" readonly placeholder="—" />
+        </div>
+        <div>
+          <label>Complemento (ViaCEP)</label>
+          <input id="complemento" readonly placeholder="—" />
+        </div>
+      </div>
+
       <div class="actions">
         <button id="btnConsultar" type="button">Consultar</button>
         <button id="btnLimpar" type="button" class="secondary">Limpar</button>
@@ -142,6 +79,11 @@
       </div>
 
       <div id="res" class="result hide"></div>
+
+      <div class="sep"></div>
+      <div class="muted">
+        Padrão de consulta: coleção <strong>algar_enderecos</strong> e docId <strong>CEP|NUMERO</strong>.
+      </div>
     </div>
   </div>
 
@@ -172,29 +114,78 @@
       return d.length > 5 ? d.slice(0,5) + "-" + d.slice(5) : d;
     };
 
-    $("cep").addEventListener("input", () => {
-      $("cep").value = formatCep($("cep").value);
-    });
-
     function show(html) {
       $("res").classList.remove("hide");
       $("res").innerHTML = html;
     }
 
-    function hide() {
+    function hideResult() {
       $("res").classList.add("hide");
       $("res").innerHTML = "";
     }
 
+    function setAddrEmpty(msg = "—") {
+      $("logradouro").value = msg;
+      $("bairro").value = msg;
+      $("cidadeuf").value = msg;
+      $("complemento").value = msg;
+    }
+
+    // -------- ViaCEP ----------
+    let lastCepFetched = "";
+
+    async function consultarViaCep(cep8) {
+      if (!cep8 || cep8.length !== 8 || cep8 === lastCepFetched) return;
+
+      lastCepFetched = cep8;
+      setAddrEmpty("Carregando...");
+
+      try {
+        const url = `https://viacep.com.br/ws/${cep8}/json/`;
+        const r = await fetch(url);
+        if (!r.ok) throw new Error(`ViaCEP HTTP ${r.status}`);
+        const data = await r.json();
+
+        if (data.erro) {
+          setAddrEmpty("CEP não encontrado");
+          return;
+        }
+
+        $("logradouro").value = data.logradouro || "—";
+        $("bairro").value = data.bairro || "—";
+        $("complemento").value = data.complemento || "—";
+        $("cidadeuf").value = `${data.localidade || "—"} / ${data.uf || "—"}`;
+
+      } catch (e) {
+        setAddrEmpty("Falha no ViaCEP");
+        console.error("ViaCEP:", e);
+      }
+    }
+
+    $("cep").addEventListener("input", async () => {
+      $("cep").value = formatCep($("cep").value);
+
+      const cep8 = onlyDigits($("cep").value);
+      if (cep8.length === 8) {
+        await consultarViaCep(cep8);
+      } else {
+        lastCepFetched = "";
+        setAddrEmpty("—");
+      }
+    });
+
+    // -------- Ações ----------
     $("btnLimpar").addEventListener("click", () => {
       $("cep").value = "";
       $("numero").value = "";
       $("status").textContent = "";
-      hide();
+      lastCepFetched = "";
+      setAddrEmpty("—");
+      hideResult();
     });
 
     $("btnConsultar").addEventListener("click", async () => {
-      hide();
+      hideResult();
 
       const cep = onlyDigits($("cep").value);
       const numero = onlyDigits($("numero").value);
@@ -248,7 +239,8 @@
       }
     });
 
-    // Debug
+    // Inicialização
+    setAddrEmpty("—");
     console.log("Firebase inicializado:", app.name);
   </script>
 </body>
