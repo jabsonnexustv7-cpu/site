@@ -103,14 +103,14 @@
       </div>
 
       <div class="muted" style="margin-top:14px;">
-        Dica: se o endpoint bloquear por CORS, você usa o Apps Script como proxy (não expõe segredos no front).
+        Esta página usa Apps Script como proxy para evitar bloqueio por CORS.
       </div>
     </div>
   </div>
 
 <script>
-  // BACKEND PRINCIPAL
-  const API_URL = "https://us-central1-webturbo-crm.cloudfunctions.net/consultarCobertura";
+  // ✅ PROXY (Apps Script) — evita CORS no navegador
+  const API_URL = "https://script.google.com/macros/s/AKfycbwKOzJIP7vQAkDgR99v6boskclJc47lBaMFaAANklS4Gkq22rszhElqRNlkyNwhe2I-/exec";
 
   const tabCep = document.getElementById("tabCep");
   const tabFachada = document.getElementById("tabFachada");
@@ -150,7 +150,6 @@
   function hide(el){ el.classList.add("hide"); el.innerHTML = ""; }
 
   function renderResultadoGenerico(data){
-    // Padroniza o que aparecer mesmo se o JSON variar
     const protocolo = data.protocolo || data.ticket || data.id || "";
     const cobertura = (data.cobertura === true || data.coverage === true) ? true :
                       (data.cobertura === false || data.coverage === false) ? false : null;
@@ -166,6 +165,25 @@
       ${detalhe ? `<div style="margin-top:6px;" class="muted">${detalhe}</div>` : ""}
       ${protocolo ? `<div style="margin-top:6px;" class="muted">Protocolo: <strong>${protocolo}</strong></div>` : ""}
     `;
+  }
+
+  async function postJson(payload){
+    // O Apps Script pode às vezes retornar HTML em erro; por isso lemos como texto e tentamos JSON.
+    const r = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type":"application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const text = await r.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = { ok:false, msg:text }; }
+
+    // Se o Apps Script devolver ok:false, respeitamos.
+    if (!r.ok) {
+      return { ok:false, msg:`HTTP ${r.status}`, raw:data };
+    }
+    return data;
   }
 
   // CEP
@@ -193,20 +211,13 @@
     statusCep.innerHTML = `<span class="spinner"></span> Consultando...`;
 
     try {
-      const r = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type":"application/json" },
-        body: JSON.stringify({ tipo:"cep", cep, numero, complemento, referencia })
-      });
-
-      const text = await r.text();
-      let data;
-      try { data = JSON.parse(text); } catch { data = { ok:false, msg:text }; }
+      // Mantém o contrato: o proxy decide para onde enviar (Cloud Function etc.)
+      const data = await postJson({ tipo:"cep", cep, numero, complemento, referencia });
 
       statusCep.textContent = "";
 
-      if (!r.ok || data.ok === false) {
-        show(resCep, `<span class="bad">Falha:</span> ${data.msg || "erro no backend"}`);
+      if (!data || data.ok === false) {
+        show(resCep, `<span class="bad">Falha:</span> ${data?.msg || "erro no backend"}`);
         return;
       }
 
@@ -247,28 +258,20 @@
     try {
       const foto_base64 = await fileToBase64(file);
 
-      const r = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type":"application/json" },
-        body: JSON.stringify({
-          tipo:"fachada",
-          cep: cep || null,
-          numero: numero || null,
-          obs,
-          foto_base64,
-          foto_nome: file.name,
-          foto_tipo: file.type
-        })
+      const data = await postJson({
+        tipo:"fachada",
+        cep: cep || null,
+        numero: numero || null,
+        obs,
+        foto_base64,
+        foto_nome: file.name,
+        foto_tipo: file.type
       });
-
-      const text = await r.text();
-      let data;
-      try { data = JSON.parse(text); } catch { data = { ok:false, msg:text }; }
 
       statusFachada.textContent = "";
 
-      if (!r.ok || data.ok === false) {
-        show(resFachada, `<span class="bad">Falha:</span> ${data.msg || "erro no backend"}`);
+      if (!data || data.ok === false) {
+        show(resFachada, `<span class="bad">Falha:</span> ${data?.msg || "erro no backend"}`);
         return;
       }
 
