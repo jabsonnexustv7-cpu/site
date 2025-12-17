@@ -3,336 +3,253 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Consulta de Cobertura — CEP e Fachada</title>
+  <title>Consulta de Cobertura — Algar</title>
+
   <style>
-    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    body { margin: 0; background:#f6f7f9; }
-    .wrap { max-width: 860px; margin: 28px auto; padding: 0 16px; }
-    .card { background:#fff; border:1px solid #e6e8ee; border-radius:12px; padding:16px; box-shadow: 0 2px 10px rgba(0,0,0,.04); }
-    h1 { font-size: 18px; margin: 0 0 10px; }
-    .muted { font-size:12px; color:#6b7280; }
-    .tabs { display:flex; gap:8px; margin: 12px 0; }
-    .tab { border:1px solid #d7dbe6; background:#fff; padding:10px 12px; border-radius:10px; cursor:pointer; font-weight:700; }
-    .tab.active { border-color:#111827; }
-    .grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-    label { display:block; font-size:12px; color:#4b5563; margin:10px 0 6px; }
-    input, textarea { width:100%; padding:10px; border:1px solid #d7dbe6; border-radius:10px; font-size:14px; background:#fff; }
-    textarea { min-height: 90px; resize: vertical; }
-    .actions { margin-top:14px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-    button { padding:10px 14px; border-radius:10px; border:1px solid #111827; background:#111827; color:#fff; font-weight:800; cursor:pointer; }
-    button.secondary { background:#fff; color:#111827; border-color:#d7dbe6; }
-    .result { margin-top:12px; padding:12px; border-radius:10px; background:#f3f4f6; border:1px solid #e5e7eb; }
-    .hide { display:none; }
-    .ok { color:#065f46; font-weight:900; }
-    .bad { color:#991b1b; font-weight:900; }
-    .warn { color:#92400e; font-weight:900; }
-    .spinner { width:14px; height:14px; border:2px solid #cbd5e1; border-top-color:#111827; border-radius:50%; animation:spin 0.7s linear infinite; display:inline-block; }
-    @keyframes spin { to { transform:rotate(360deg); } }
-    .pill { display:inline-block; padding:4px 8px; border-radius:999px; background:#111827; color:#fff; font-size:12px; font-weight:800; }
-    a { color:#111827; }
-    code { background:#eef2ff; padding:2px 6px; border-radius:6px; }
+    :root {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    body {
+      margin: 0;
+      background: #f6f7f9;
+    }
+    .wrap {
+      max-width: 860px;
+      margin: 28px auto;
+      padding: 0 16px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #e6e8ee;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.04);
+    }
+    h1 {
+      font-size: 18px;
+      margin: 0 0 6px;
+    }
+    .muted {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      color: #4b5563;
+      margin: 10px 0 6px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #d7dbe6;
+      border-radius: 10px;
+      font-size: 14px;
+      background: #fff;
+    }
+    .actions {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid #111827;
+      background: #111827;
+      color: #fff;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    button.secondary {
+      background: #fff;
+      color: #111827;
+      border-color: #d7dbe6;
+    }
+    .result {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+    }
+    .hide {
+      display: none;
+    }
+    .ok {
+      color: #065f46;
+      font-weight: 900;
+    }
+    .bad {
+      color: #991b1b;
+      font-weight: 900;
+    }
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid #cbd5e1;
+      border-top-color: #111827;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .pill {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #111827;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+    }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="card">
       <h1>Consulta de Cobertura</h1>
-      <div class="muted">Consulta por CEP (Firestore) e envio de Fachada (Storage) para análise.</div>
-
-      <div class="tabs">
-        <button class="tab active" id="tabCep" type="button">Por CEP</button>
-        <button class="tab" id="tabFachada" type="button">Por Fachada</button>
+      <div class="muted">
+        Consulta direta no Firestore (base Algar) por CEP + número.
       </div>
 
-      <!-- CEP -->
-      <div id="paneCep">
-        <div class="grid">
-          <div>
-            <label>CEP</label>
-            <input id="cep" inputmode="numeric" placeholder="Ex.: 90001-970" maxlength="9" />
-          </div>
-          <div>
-            <label>Número</label>
-            <input id="numero" inputmode="numeric" placeholder="Ex.: 19" />
-          </div>
+      <div class="grid">
+        <div>
+          <label>CEP</label>
+          <input id="cep" inputmode="numeric" placeholder="Ex.: 90001-970" maxlength="9" />
         </div>
-
-        <div class="grid">
-          <div>
-            <label>Complemento (opcional)</label>
-            <input id="complemento" placeholder="Apto, casa, bloco..." />
-          </div>
-          <div>
-            <label>Referência (opcional)</label>
-            <input id="referencia" placeholder="Perto de..." />
-          </div>
+        <div>
+          <label>Número</label>
+          <input id="numero" inputmode="numeric" placeholder="Ex.: 19" />
         </div>
-
-        <div class="actions">
-          <button type="button" id="btnConsultarCep">Consultar</button>
-          <button type="button" class="secondary" id="btnLimparCep">Limpar</button>
-          <span class="muted" id="statusCep"></span>
-        </div>
-
-        <div class="result hide" id="resCep"></div>
       </div>
 
-      <!-- FACHADA -->
-      <div id="paneFachada" class="hide">
-        <div class="grid">
-          <div>
-            <label>CEP (se souber)</label>
-            <input id="cep2" inputmode="numeric" placeholder="Ex.: 90001-970" maxlength="9" />
-          </div>
-          <div>
-            <label>Número (se souber)</label>
-            <input id="numero2" inputmode="numeric" placeholder="Ex.: 19" />
-          </div>
-        </div>
-
-        <label>Foto da fachada (jpg/png/webp)</label>
-        <input id="foto" type="file" accept="image/*" />
-
-        <label>Observações</label>
-        <textarea id="obs" placeholder="Ex.: portão preto, placa 19, esquina com Rua X..."></textarea>
-
-        <div class="actions">
-          <button type="button" id="btnEnviarFachada">Enviar</button>
-          <button type="button" class="secondary" id="btnLimparFachada">Limpar</button>
-          <span class="muted" id="statusFachada"></span>
-        </div>
-
-        <div class="result hide" id="resFachada"></div>
+      <div class="actions">
+        <button id="btnConsultar" type="button">Consultar</button>
+        <button id="btnLimpar" type="button" class="secondary">Limpar</button>
+        <span class="muted" id="status"></span>
       </div>
 
-      <div class="muted" style="margin-top:14px;">
-        Padrão do Firestore: coleção <code>algar_enderecos</code> e docId <code>CEP|NUMERO</code> (ex.: <code>90001970|19</code>).
-      </div>
+      <div id="res" class="result hide"></div>
     </div>
   </div>
 
-<script type="module">
-  // ---------------------------
-  // Firebase SDK (Web v9+ modular)
-  // ---------------------------
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-  import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-  // ---------------------------
-  // 🔴 TROQUE pelo config do projeto webturbo-crm
-  // Firebase Console > Project settings > Your apps > Firebase SDK snippet (Config)
-  // ---------------------------
-  const firebaseConfig = {
-    apiKey: "AIzaSyB9nOa8MBenK0Ayp3bwYV-_L2zFoPTwcWI",
-    authDomain: "webturbo-crm.firebaseapp.com",
-    projectId: "webturbo-crm",
-    storageBucket: "webturbo-crm.firebasestorage.app",
-    messagingSenderId: "964927461432",
-    appId: "1:964927461432:web:b3176b7e9f9566f057eecd"
-  };
+    // 🔐 Firebase — webturbo-crm
+    const firebaseConfig = {
+      apiKey: "AIzaSyB9nOa8MBenK0Ayp3bwYV-_L2zFoPTwcWI",
+      authDomain: "webturbo-crm.firebaseapp.com",
+      projectId: "webturbo-crm",
+      storageBucket: "webturbo-crm.firebasestorage.app",
+      messagingSenderId: "964927461432",
+      appId: "1:964927461432:web:b3176b7e9f9566f057eecd"
+    };
 
-  // ---------------------------
-  // Firestore/Storage init
-  // ---------------------------
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const storage = getStorage(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-  // ---------------------------
-  // Convenções do seu banco
-  // ---------------------------
-  const ALGAR_COLLECTION = "algar_enderecos";          // ✅ conforme print
-  const FACHADA_COLLECTION = "solicitacoes_fachada";   // você pode criar
-  const FACHADA_STORAGE_PREFIX = "fachadas";           // pasta no Storage
+    const COLLECTION = "algar_enderecos";
 
-  // ---------------------------
-  // UI: Tabs
-  // ---------------------------
-  const tabCep = document.getElementById("tabCep");
-  const tabFachada = document.getElementById("tabFachada");
-  const paneCep = document.getElementById("paneCep");
-  const paneFachada = document.getElementById("paneFachada");
+    const $ = (id) => document.getElementById(id);
+    const onlyDigits = (v) => (v || "").replace(/\D+/g, "");
 
-  function setTab(which) {
-    const isCep = which === "cep";
-    tabCep.classList.toggle("active", isCep);
-    tabFachada.classList.toggle("active", !isCep);
-    paneCep.classList.toggle("hide", !isCep);
-    paneFachada.classList.toggle("hide", isCep);
-  }
-  tabCep.addEventListener("click", () => setTab("cep"));
-  tabFachada.addEventListener("click", () => setTab("fachada"));
+    const formatCep = (v) => {
+      const d = onlyDigits(v).slice(0, 8);
+      return d.length > 5 ? d.slice(0,5) + "-" + d.slice(5) : d;
+    };
 
-  // ---------------------------
-  // Helpers
-  // ---------------------------
-  function onlyDigits(s){ return (s||"").replace(/\D+/g,""); }
-  function formatCep(v){
-    const d = onlyDigits(v).slice(0,8);
-    if (d.length <= 5) return d;
-    return d.slice(0,5) + "-" + d.slice(5);
-  }
-  ["cep","cep2"].forEach(id => {
-    const el = document.getElementById(id);
-    el.addEventListener("input", () => el.value = formatCep(el.value));
-  });
+    $("cep").addEventListener("input", () => {
+      $("cep").value = formatCep($("cep").value);
+    });
 
-  function show(el, html){ el.classList.remove("hide"); el.innerHTML = html; }
-  function hide(el){ el.classList.add("hide"); el.innerHTML = ""; }
+    function show(html) {
+      $("res").classList.remove("hide");
+      $("res").innerHTML = html;
+    }
 
-  function safeHtml(v){
-    return String(v ?? "")
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-  }
+    function hide() {
+      $("res").classList.add("hide");
+      $("res").innerHTML = "";
+    }
 
-  function renderCoberturaFromDoc(data){
-    // Se existe doc => "COM COBERTURA"
-    const municipio = safeHtml(data?.municipio || "");
-    const uf = safeHtml(data?.uf || "");
-    const cep = safeHtml(data?.cep || "");
-    const numero = safeHtml(data?.numero || "");
-    const atualizado = data?.atualizado_em ? safeHtml(data.atualizado_em) : "";
+    $("btnLimpar").addEventListener("click", () => {
+      $("cep").value = "";
+      $("numero").value = "";
+      $("status").textContent = "";
+      hide();
+    });
 
-    return `
-      <div>
-        <span class="pill">Resultado</span>
-        <span class="ok">COM COBERTURA</span>
-      </div>
-      <div class="muted" style="margin-top:6px;">
-        Município: <strong>${municipio}</strong> – ${uf}<br>
-        CEP: ${cep} • Número: ${numero}
-        ${atualizado ? `<br>Atualizado em: ${atualizado}` : ""}
-      </div>
-    `;
-  }
+    $("btnConsultar").addEventListener("click", async () => {
+      hide();
 
-  function renderSemCobertura(){
-    return `
-      <div>
-        <span class="pill">Resultado</span>
-        <span class="bad">SEM COBERTURA</span>
-      </div>
-      <div class="muted" style="margin-top:6px;">
-        Endereço não encontrado na base da Algar para este CEP/número.<br>
-        Se necessário, use a aba “Por Fachada” para solicitar análise manual.
-      </div>
-    `;
-  }
+      const cep = onlyDigits($("cep").value);
+      const numero = onlyDigits($("numero").value);
 
-  // ---------------------------
-  // CEP: consulta Firestore em algar_enderecos/{CEP|NUMERO}
-  // ---------------------------
-  const btnConsultarCep = document.getElementById("btnConsultarCep");
-  const btnLimparCep = document.getElementById("btnLimparCep");
-  const statusCep = document.getElementById("statusCep");
-  const resCep = document.getElementById("resCep");
-
-  btnLimparCep.addEventListener("click", () => {
-    ["cep","numero","complemento","referencia"].forEach(id => document.getElementById(id).value = "");
-    statusCep.textContent = "";
-    hide(resCep);
-  });
-
-  btnConsultarCep.addEventListener("click", async () => {
-    hide(resCep);
-
-    const cep = onlyDigits(document.getElementById("cep").value);
-    const numero = onlyDigits(document.getElementById("numero").value);
-
-    if (cep.length !== 8) { show(resCep, `<span class="bad">CEP inválido.</span>`); return; }
-    if (!numero) { show(resCep, `<span class="bad">Número obrigatório.</span>`); return; }
-
-    statusCep.innerHTML = `<span class="spinner"></span> Consultando...`;
-
-    try {
-      // ✅ ID REAL DO SEU BANCO
-      const docId = `${cep}|${numero}`;
-
-      const snap = await getDoc(doc(db, ALGAR_COLLECTION, docId));
-
-      statusCep.textContent = "";
-
-      if (snap.exists()) {
-        show(resCep, renderCoberturaFromDoc(snap.data()));
-      } else {
-        show(resCep, renderSemCobertura());
+      if (cep.length !== 8) {
+        show(`<span class="bad">CEP inválido.</span>`);
+        return;
       }
 
-    } catch (e) {
-      statusCep.textContent = "";
-      show(resCep, `<span class="bad">Erro:</span> ${safeHtml(e.message || e)}`);
-    }
-  });
+      if (!numero) {
+        show(`<span class="bad">Número obrigatório.</span>`);
+        return;
+      }
 
-  // ---------------------------
-  // FACHADA: upload Storage + registrar solicitação no Firestore
-  // ---------------------------
-  const btnEnviarFachada = document.getElementById("btnEnviarFachada");
-  const btnLimparFachada = document.getElementById("btnLimparFachada");
-  const statusFachada = document.getElementById("statusFachada");
-  const resFachada = document.getElementById("resFachada");
+      $("status").innerHTML = `<span class="spinner"></span> Consultando...`;
 
-  btnLimparFachada.addEventListener("click", () => {
-    ["cep2","numero2","obs"].forEach(id => document.getElementById(id).value = "");
-    document.getElementById("foto").value = "";
-    statusFachada.textContent = "";
-    hide(resFachada);
-  });
+      try {
+        const docId = `${cep}|${numero}`;
+        const snap = await getDoc(doc(db, COLLECTION, docId));
 
-  btnEnviarFachada.addEventListener("click", async () => {
-    hide(resFachada);
+        $("status").textContent = "";
 
-    const cep = onlyDigits(document.getElementById("cep2").value);
-    const numero = onlyDigits(document.getElementById("numero2").value);
-    const obs = document.getElementById("obs").value.trim();
-    const file = document.getElementById("foto").files?.[0];
+        if (snap.exists()) {
+          const d = snap.data();
+          show(`
+            <div>
+              <span class="pill">Resultado</span>
+              <span class="ok">COM COBERTURA</span>
+            </div>
+            <div class="muted" style="margin-top:6px;">
+              Município: <strong>${d.municipio || "-"}</strong> – ${d.uf || "-"}<br>
+              CEP: ${d.cep || cep} • Número: ${d.numero || numero}
+            </div>
+          `);
+        } else {
+          show(`
+            <div>
+              <span class="pill">Resultado</span>
+              <span class="bad">SEM COBERTURA</span>
+            </div>
+            <div class="muted" style="margin-top:6px;">
+              Endereço não encontrado na base da Algar.
+            </div>
+          `);
+        }
 
-    if (!file) { show(resFachada, `<span class="bad">Envie a foto da fachada.</span>`); return; }
-    if (file.size > 6 * 1024 * 1024) { show(resFachada, `<span class="bad">Arquivo muito grande.</span> Até 6MB.`); return; }
+      } catch (err) {
+        $("status").textContent = "";
+        show(`<span class="bad">Erro:</span> ${err.message || err}`);
+        console.error(err);
+      }
+    });
 
-    statusFachada.innerHTML = `<span class="spinner"></span> Enviando...`;
-
-    try {
-      const protocolo = `FACH-${new Date().toISOString().replace(/[-:.TZ]/g,"").slice(0,14)}-${Math.random().toString(16).slice(2,8).toUpperCase()}`;
-
-      const safeName = (file.name || "fachada").replace(/[^\w.\-]+/g, "_").slice(0,60);
-      const path = `${FACHADA_STORAGE_PREFIX}/${protocolo}/${safeName}`;
-      const storageRef = ref(storage, path);
-
-      // Upload
-      await uploadBytes(storageRef, file, { contentType: file.type || "application/octet-stream" });
-      const fotoUrl = await getDownloadURL(storageRef);
-
-      // Registrar solicitação no Firestore
-      await setDoc(doc(db, FACHADA_COLLECTION, protocolo), {
-        protocolo,
-        cep: cep || null,
-        numero: numero || null,
-        obs: obs || null,
-        fotoUrl,
-        storagePath: path,
-        status: "EM_ANALISE",
-        createdAt: serverTimestamp()
-      });
-
-      statusFachada.textContent = "";
-
-      show(resFachada, `
-        <div><span class="pill">Status</span> <span class="ok">ENVIADO PARA ANÁLISE</span></div>
-        <div class="muted" style="margin-top:6px;">Protocolo: <strong>${safeHtml(protocolo)}</strong></div>
-        <div class="muted" style="margin-top:6px;">Foto: <a href="${fotoUrl}" target="_blank" rel="noopener">abrir</a></div>
-      `);
-
-    } catch (e) {
-      statusFachada.textContent = "";
-      show(resFachada, `<span class="bad">Erro:</span> ${safeHtml(e.message || e)}`);
-    }
-  });
-</script>
+    // Debug
+    console.log("Firebase inicializado:", app.name);
+  </script>
 </body>
 </html>
