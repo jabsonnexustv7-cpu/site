@@ -127,7 +127,11 @@
       $("bairro").value = msg;
       $("cidadeuf").value = msg;
       $("complemento").value = msg;
+      viaCepComplemento = ""; // ✅ zera fallback do ViaCEP também
     }
+
+    // ✅ guarda o complemento do ViaCEP como fallback
+    let viaCepComplemento = "";
 
     // -------- ViaCEP ----------
     let lastCepFetched = "";
@@ -135,11 +139,14 @@
     async function consultarViaCep(cep8) {
       if (!cep8 || cep8.length !== 8) return;
 
-      // evita refetch se já buscou esse CEP e o usuário só mudou o número
       if (cep8 === lastCepFetched) return;
       lastCepFetched = cep8;
 
-      setAddrEmpty("Carregando...");
+      // não apagar tudo com "Carregando..." pois isso sobrescreve complemento do banco
+      $("logradouro").value = "Carregando...";
+      $("bairro").value = "Carregando...";
+      $("cidadeuf").value = "Carregando...";
+      $("complemento").value = "Carregando...";
 
       try {
         const r = await fetch(`https://viacep.com.br/ws/${cep8}/json/`);
@@ -153,9 +160,11 @@
 
         $("logradouro").value = data.logradouro || "—";
         $("bairro").value = data.bairro || "—";
-        // complemento do ViaCEP é fallback (pode ser vazio)
-        $("complemento").value = data.complemento || "—";
         $("cidadeuf").value = `${data.localidade || "—"} / ${data.uf || "—"}`;
+
+        // ✅ salva fallback e já coloca na UI por padrão
+        viaCepComplemento = (data.complemento || "").trim();
+        $("complemento").value = viaCepComplemento || "—";
 
       } catch (e) {
         console.error("ViaCEP:", e);
@@ -183,7 +192,7 @@
       }
     });
 
-    // (Opcional) ENTER no CEP também dispara consulta (se número estiver preenchido)
+    // ENTER no CEP também dispara consulta (se número estiver preenchido)
     $("cep").addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
@@ -221,9 +230,14 @@
 
         if (snap.exists()) {
           const d = snap.data() || {};
-          // ✅ Prioriza complemento do banco (campo "complemento"), senão mantém o ViaCEP
-          if (d.complemento && String(d.complemento).trim()) {
-            $("complemento").value = String(d.complemento).trim();
+
+          // ✅ complemento do banco tem prioridade
+          const complBanco = (d.complemento || "").toString().trim();
+          if (complBanco) {
+            $("complemento").value = complBanco;
+          } else {
+            // ✅ fallback do ViaCEP
+            $("complemento").value = viaCepComplemento || "—";
           }
 
           show(`
@@ -234,10 +248,13 @@
             <div class="muted" style="margin-top:6px;">
               Município: <strong>${d.municipio || "-"}</strong> – ${d.uf || "-"}<br>
               CEP: ${d.cep || cep} • Número: ${d.numero || numero}
-              ${d.complemento ? `<br>Complemento (banco): <strong>${String(d.complemento).trim()}</strong>` : ``}
+              ${complBanco ? `<br>Complemento (banco): <strong>${complBanco}</strong>` : ``}
             </div>
           `);
         } else {
+          // ✅ quando não tem doc, mantém o complemento do ViaCEP (se houver)
+          $("complemento").value = viaCepComplemento || "—";
+
           show(`
             <div>
               <span class="pill">Resultado</span>
