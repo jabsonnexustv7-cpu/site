@@ -36,6 +36,7 @@
       <h1>Consulta de Cobertura</h1>
       <div class="muted">
         Consulta direta no Firestore (base Algar) por CEP + número. Endereço preenchido automaticamente via ViaCEP.
+        Se houver <strong>complemento no banco</strong>, ele aparece aqui (prioridade sobre ViaCEP).
       </div>
 
       <div class="grid">
@@ -66,7 +67,7 @@
           <input id="cidadeuf" readonly placeholder="—" />
         </div>
         <div>
-          <label>Complemento (ViaCEP)</label>
+          <label>Complemento (Banco/ViaCEP)</label>
           <input id="complemento" readonly placeholder="—" />
         </div>
       </div>
@@ -132,13 +133,17 @@
     let lastCepFetched = "";
 
     async function consultarViaCep(cep8) {
-      if (!cep8 || cep8.length !== 8 || cep8 === lastCepFetched) return;
+      if (!cep8 || cep8.length !== 8) return;
 
+      // evita refetch se já buscou esse CEP e o usuário só mudou o número
+      if (cep8 === lastCepFetched) return;
       lastCepFetched = cep8;
+
       setAddrEmpty("Carregando...");
 
       try {
         const r = await fetch(`https://viacep.com.br/ws/${cep8}/json/`);
+        if (!r.ok) throw new Error(`ViaCEP HTTP ${r.status}`);
         const data = await r.json();
 
         if (data.erro) {
@@ -148,10 +153,12 @@
 
         $("logradouro").value = data.logradouro || "—";
         $("bairro").value = data.bairro || "—";
+        // complemento do ViaCEP é fallback (pode ser vazio)
         $("complemento").value = data.complemento || "—";
         $("cidadeuf").value = `${data.localidade || "—"} / ${data.uf || "—"}`;
 
-      } catch {
+      } catch (e) {
+        console.error("ViaCEP:", e);
         setAddrEmpty("Falha no ViaCEP");
       }
     }
@@ -159,11 +166,25 @@
     $("cep").addEventListener("input", async () => {
       $("cep").value = formatCep($("cep").value);
       const cep8 = onlyDigits($("cep").value);
-      cep8.length === 8 ? consultarViaCep(cep8) : setAddrEmpty("—");
+
+      if (cep8.length === 8) {
+        await consultarViaCep(cep8);
+      } else {
+        lastCepFetched = "";
+        setAddrEmpty("—");
+      }
     });
 
     // 🔑 ENTER no campo Número dispara consulta
     $("numero").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        $("btnConsultar").click();
+      }
+    });
+
+    // (Opcional) ENTER no CEP também dispara consulta (se número estiver preenchido)
+    $("cep").addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
         $("btnConsultar").click();
@@ -179,6 +200,7 @@
       hideResult();
     });
 
+    // -------- Consulta Firestore ----------
     $("btnConsultar").addEventListener("click", async () => {
       hideResult();
 
@@ -188,16 +210,44 @@
       if (cep.length !== 8) return show(`<span class="bad">CEP inválido.</span>`);
       if (!numero) return show(`<span class="bad">Número obrigatório.</span>`);
 
+      // garante ViaCEP carregado (se ainda não carregou)
+      await consultarViaCep(cep);
+
       $("status").innerHTML = `<span class="spinner"></span> Consultando...`;
 
       try {
         const snap = await getDoc(doc(db, COLLECTION, `${cep}|${numero}`));
         $("status").textContent = "";
 
-        snap.exists()
-          ? show(`<span class="ok">COM COBERTURA</span>`)
-          : show(`<span class="bad">SEM COBERTURA</span>`);
+        if (snap.exists()) {
+          const d = snap.data() || {};
+          // ✅ Prioriza complemento do banco (campo "complemento"), senão mantém o ViaCEP
+          if (d.complemento && String(d.complemento).trim()) {
+            $("complemento").value = String(d.complemento).trim();
+          }
 
+          show(`
+            <div>
+              <span class="pill">Resultado</span>
+              <span class="ok">COM COBERTURA</span>
+            </div>
+            <div class="muted" style="margin-top:6px;">
+              Município: <strong>${d.municipio || "-"}</strong> – ${d.uf || "-"}<br>
+              CEP: ${d.cep || cep} • Número: ${d.numero || numero}
+              ${d.complemento ? `<br>Complemento (banco): <strong>${String(d.complemento).trim()}</strong>` : ``}
+            </div>
+          `);
+        } else {
+          show(`
+            <div>
+              <span class="pill">Resultado</span>
+              <span class="bad">SEM COBERTURA</span>
+            </div>
+            <div class="muted" style="margin-top:6px;">
+              Endereço não encontrado na base da Algar.
+            </div>
+          `);
+        }
       } catch (err) {
         $("status").textContent = "";
         show(`<span class="bad">Erro:</span> ${err.message}`);
