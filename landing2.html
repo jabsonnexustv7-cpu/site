@@ -2,168 +2,533 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
-<title>NOME DA SUA EMPRESA - Internet Fibra Óptica</title>
+<title>WebTurbo - Internet Fibra Óptica</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="Planos de Internet Fibra Óptica com alta velocidade, estabilidade e Wi-Fi grátis.">
+<meta name="description" content="Consulte a cobertura e contrate sua internet fibra óptica com alta velocidade, estabilidade e instalação rápida.">
 
 <style>
 :root{
---bg:#020617;
---card:#0f172a;
---text:#f9fafb;
---muted:#9ca3af;
---primary:#22c55e;
---radius:18px;
+  --bg:#020617;
+  --card:#0f172a;
+  --card-2:#111827;
+  --text:#f8fafc;
+  --muted:#94a3b8;
+  --primary:#22c55e;
+  --primary-dark:#16a34a;
+  --secondary:#4338ca;
+  --border:#1e293b;
+  --white:#ffffff;
+  --danger:#ef4444;
+  --ok:#22c55e;
+  --input:#0b1222;
+  --radius:20px;
 }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui;}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+
+html{
+  scroll-behavior:smooth;
+}
 
 body{
-background:radial-gradient(circle at top,#0b1430 0,#020617 45%,#000 100%);
-color:var(--text);
+  background:radial-gradient(circle at top,#0b1430 0,#020617 45%,#000 100%);
+  color:var(--text);
 }
 
-.page{max-width:1150px;margin:auto;padding:20px;}
+.page{
+  max-width:1180px;
+  margin:auto;
+  padding:20px;
+}
 
 header{
-display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:28px;
+  gap:16px;
+  flex-wrap:wrap;
 }
 
-.logo{font-weight:800;font-size:20px;}
-.sublogo{font-size:12px;color:var(--muted);}
+.logo{
+  font-weight:900;
+  font-size:22px;
+}
+
+.sublogo{
+  font-size:12px;
+  color:var(--muted);
+}
 
 .btn-whats{
-background:var(--primary);
-padding:10px 18px;
-border-radius:999px;
-color:#022c22;
-font-weight:700;
-text-decoration:none;
+  background:var(--primary);
+  padding:11px 18px;
+  border-radius:999px;
+  color:#052e16;
+  font-weight:900;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  transition:.2s ease;
 }
 
-main{
-display:grid;
-grid-template-columns:1.2fr 1fr;
-gap:30px;
-margin-bottom:40px;
+.btn-whats:hover{
+  transform:translateY(-1px);
+  background:#4ade80;
 }
 
-@media(max-width:900px){
-main{grid-template-columns:1fr;}
+.hero{
+  display:grid;
+  grid-template-columns:1.05fr .95fr;
+  gap:28px;
+  align-items:stretch;
+  margin-bottom:42px;
 }
 
-.hero h1{
-font-size:34px;
-margin-bottom:10px;
+@media(max-width:960px){
+  .hero{
+    grid-template-columns:1fr;
+  }
 }
 
-.hero p{
-color:var(--muted);
-margin-bottom:15px;
+.hero-left{
+  padding:14px 0;
 }
 
 .badge{
-display:inline-block;
-padding:4px 10px;
-border-radius:999px;
-background:#1e293b;
-font-size:12px;
-margin-bottom:10px;
+  display:inline-block;
+  padding:7px 12px;
+  border-radius:999px;
+  background:#162033;
+  color:#dbeafe;
+  font-size:12px;
+  margin-bottom:14px;
+  border:1px solid #22304a;
+}
+
+.hero-left h1{
+  font-size:46px;
+  line-height:1.08;
+  margin-bottom:14px;
+  max-width:700px;
+}
+
+.hero-left p{
+  color:var(--muted);
+  font-size:17px;
+  line-height:1.7;
+  margin-bottom:20px;
+  max-width:650px;
+}
+
+.hero-points{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:22px;
+}
+
+@media(max-width:640px){
+  .hero-points{
+    grid-template-columns:1fr;
+  }
+}
+
+.hero-point{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:14px;
+  color:#e5e7eb;
+  font-size:14px;
+}
+
+.hero-actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.btn-outline{
+  border:1px solid #334155;
+  color:#e2e8f0;
+  padding:11px 18px;
+  border-radius:999px;
+  text-decoration:none;
+  font-weight:800;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  transition:.2s ease;
+}
+
+.btn-outline:hover{
+  transform:translateY(-1px);
+  background:#111827;
 }
 
 .card{
-background:var(--card);
-padding:20px;
-border-radius:var(--radius);
-border:1px solid #1e293b;
+  background:var(--card);
+  padding:22px;
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+  box-shadow:0 14px 34px rgba(0,0,0,.28);
 }
 
-.price{
-font-size:28px;
-font-weight:900;
-margin:8px 0;
+.coverage-card{
+  background:linear-gradient(180deg,#0f172a 0%, #0b1222 100%);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:22px;
+  box-shadow:0 14px 34px rgba(0,0,0,.3);
 }
 
-.features li{
-margin-bottom:6px;
-font-size:14px;
+.coverage-card h2{
+  font-size:28px;
+  margin-bottom:8px;
+}
+
+.coverage-card p{
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.6;
+  margin-bottom:16px;
+}
+
+.coverage-badges{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:16px;
+}
+
+.coverage-badge{
+  display:inline-block;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid #22304a;
+  background:#111827;
+  color:#cbd5e1;
+  font-size:12px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+@media(max-width:720px){
+  .grid{
+    grid-template-columns:1fr;
+  }
+}
+
+label{
+  display:block;
+  font-weight:800;
+  margin:8px 0 6px;
+  font-size:14px;
+}
+
+input, select{
+  width:100%;
+  padding:13px 14px;
+  border-radius:12px;
+  border:1px solid #243147;
+  font-size:14px;
+  outline:none;
+  background:var(--input);
+  color:var(--text);
+}
+
+input::placeholder{
+  color:#64748b;
+}
+
+input:focus, select:focus{
+  border-color:#475569;
+}
+
+.help{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:6px;
+  line-height:1.5;
+}
+
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+
+button{
+  padding:11px 15px;
+  border-radius:12px;
+  border:1px solid #243147;
+  background:#111827;
+  cursor:pointer;
+  font-weight:800;
+  color:var(--text);
+  transition:.2s ease;
+}
+
+button:hover{
+  transform:translateY(-1px);
+}
+
+button.primary{
+  background:var(--primary);
+  color:#052e16;
+  border-color:var(--primary-dark);
+}
+
+button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+  transform:none;
+}
+
+.status{
+  font-weight:900;
+  font-size:18px;
+}
+
+.status.ok{
+  color:var(--ok);
+}
+
+.status.err{
+  color:var(--danger);
+}
+
+.mini{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:6px;
+}
+
+.readonly{
+  background:#111827 !important;
+  color:#94a3b8 !important;
+  border-color:#1f2937 !important;
+}
+
+.resultGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:10px;
+}
+
+@media(max-width:720px){
+  .resultGrid{
+    grid-template-columns:1fr;
+  }
+}
+
+.kv{
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:#0b1222;
+}
+
+.k{
+  font-size:12px;
+  color:var(--muted);
+  font-weight:800;
+  margin-bottom:6px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.v{
+  font-size:14px;
+  font-weight:800;
+  color:var(--text);
+  word-break:break-word;
+  line-height:1.5;
+}
+
+.copyBtn{
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:10px;
+  border:1px solid #243147;
+  background:#111827;
+  color:var(--text);
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.coverage-cta{
+  margin-top:16px;
+  padding:16px;
+  border-radius:16px;
+  background:linear-gradient(135deg,rgba(34,197,94,.12),rgba(74,222,128,.08));
+  border:1px solid rgba(34,197,94,.28);
+  display:none;
+}
+
+.coverage-cta.show{
+  display:block;
+}
+
+.coverage-cta-title{
+  font-size:18px;
+  font-weight:900;
+  margin-bottom:6px;
+  color:#dcfce7;
+}
+
+.coverage-cta p{
+  color:#cbd5e1;
+  margin-bottom:12px;
+  line-height:1.6;
+}
+
+.contract-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--primary);
+  color:#052e16;
+  font-weight:900;
+  text-decoration:none;
+  padding:13px 18px;
+  border-radius:999px;
+  min-width:220px;
+  transition:.2s ease;
+}
+
+.contract-btn:hover{
+  transform:translateY(-1px);
+  background:#4ade80;
 }
 
 .section-title{
-font-size:22px;
-margin-bottom:20px;
-text-align:center;
+  font-size:24px;
+  margin-bottom:20px;
+  text-align:center;
 }
 
 .plans{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-gap:18px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:18px;
 }
 
 .plan{
-background:white;
-color:#111;
-border-radius:20px;
-padding:18px;
+  background:#fff;
+  color:#111;
+  border-radius:20px;
+  padding:18px;
+  box-shadow:0 10px 24px rgba(0,0,0,.18);
 }
 
 .plan h3{
-font-size:18px;
-margin-bottom:8px;
+  font-size:18px;
+  margin-bottom:8px;
 }
 
 .plan-price{
-font-size:26px;
-font-weight:900;
-margin:10px 0;
+  font-size:26px;
+  font-weight:900;
+  margin:10px 0;
 }
 
-.plan small{color:#555;}
+.plan small{
+  color:#555;
+}
 
 .plan ul{
-margin:10px 0;
-font-size:13px;
+  margin:10px 0;
+  font-size:13px;
+  padding-left:16px;
 }
 
 .plan-btn{
-display:block;
-background:#4338ca;
-color:white;
-text-align:center;
-padding:10px;
-border-radius:999px;
-font-weight:700;
-text-decoration:none;
-margin-top:10px;
+  display:block;
+  background:#4338ca;
+  color:white;
+  text-align:center;
+  padding:11px;
+  border-radius:999px;
+  font-weight:900;
+  text-decoration:none;
+  margin-top:10px;
 }
 
 .best{
-background:linear-gradient(90deg,#22c55e,#4ade80);
-color:#022c22;
-font-weight:900;
-padding:5px 10px;
-border-radius:999px;
-font-size:11px;
-display:inline-block;
-margin-bottom:8px;
+  background:linear-gradient(90deg,#22c55e,#4ade80);
+  color:#022c22;
+  font-weight:900;
+  padding:5px 10px;
+  border-radius:999px;
+  font-size:11px;
+  display:inline-block;
+  margin-bottom:8px;
+}
+
+.offer-strip{
+  margin:0 0 34px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+
+@media(max-width:900px){
+  .offer-strip{
+    grid-template-columns:1fr;
+  }
+}
+
+.offer-mini{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px;
+}
+
+.offer-mini strong{
+  display:block;
+  font-size:16px;
+  margin-bottom:6px;
+}
+
+.offer-mini span{
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.6;
 }
 
 .cities{
-background:var(--card);
-padding:20px;
-border-radius:var(--radius);
-margin-top:30px;
-font-size:13px;
-color:var(--muted);
-line-height:1.6;
+  background:var(--card);
+  padding:20px;
+  border-radius:var(--radius);
+  margin-top:30px;
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.8;
+  border:1px solid var(--border);
 }
 
 footer{
-margin-top:40px;
-text-align:center;
-font-size:12px;
-color:var(--muted);
+  margin-top:40px;
+  text-align:center;
+  font-size:12px;
+  color:var(--muted);
 }
 </style>
 </head>
@@ -172,125 +537,594 @@ color:var(--muted);
 <div class="page">
 
 <header>
-<div>
-<div class="logo">WebTurbo</div>
-<div class="sublogo">Internet Fibra Óptica</div>
-</div>
+  <div>
+    <div class="logo">WebTurbo</div>
+    <div class="sublogo">Internet Fibra Óptica</div>
+  </div>
 
-<a href="https://wa.me/5551999999999?text=Quero%20falar%20sobre%20os%20planos" class="btn-whats" target="_blank">
-💬 WhatsApp
-</a>
+  <a href="https://wa.me/5551999999999?text=Quero%20falar%20sobre%20os%20planos" class="btn-whats" target="_blank">
+    💬 WhatsApp
+  </a>
 </header>
 
-<main>
-<div class="hero">
-<div class="badge">🚀 Promoção Fibra</div>
-<h1>Internet fibra óptica com velocidade e estabilidade.</h1>
-<p>Planos com Wi-Fi potente, suporte local e condição especial para novos assinantes.</p>
-<a href="#planos" class="btn-whats">Ver planos</a>
-</div>
+<section class="hero">
+  <div class="hero-left">
+    <div class="badge">🚀 Oferta especial para novos assinantes</div>
+    <h1>Consulte agora a cobertura da sua rua e contrate sua fibra em minutos.</h1>
+    <p>Internet rápida, estável e com suporte local. Digite seu endereço, veja se a cobertura está disponível e, se estiver viável, siga direto para a contratação no WhatsApp.</p>
 
-<div class="card">
-<span class="best">🏆 MAIS VENDIDO</span>
-<h2>600 Megas + 1 CHIP (10 GB)</h2>
-<div class="price">R$ 144,90/mês</div>
-<ul class="features">
-<li>✔ Fibra 600MB alta performance</li>
-<li>✔ 1 chip com 10GB incluso</li>
-<li>✔ Wi-Fi incluso</li>
-<li>✔ Instalação grátis</li>
-</ul>
-<a href="https://wa.me/5551999999999?text=Quero%20contratar%20600%20Megas%20%2B%2010GB" class="btn-whats" target="_blank">Contratar</a>
-</div>
-</main>
+    <div class="hero-points">
+      <div class="hero-point">✅ Consulta rápida de cobertura</div>
+      <div class="hero-point">✅ Instalação sujeita à viabilidade técnica</div>
+      <div class="hero-point">✅ Planos com ótimo custo-benefício</div>
+      <div class="hero-point">✅ Atendimento direto pelo WhatsApp</div>
+    </div>
+
+    <div class="hero-actions">
+      <a href="#planos" class="btn-whats">Ver planos</a>
+      <a href="#consultar" class="btn-outline">Consultar cobertura</a>
+    </div>
+  </div>
+
+  <div id="consultar" class="coverage-card">
+    <h2>Verifique a cobertura</h2>
+    <p>Preencha abaixo para consultar disponibilidade no endereço do cliente.</p>
+
+    <div class="coverage-badges">
+      <span class="coverage-badge">Raio fixo: 200m</span>
+      <span class="coverage-badge">Consulta automática</span>
+      <span class="coverage-badge">Libera contratação se viável</span>
+    </div>
+
+    <div class="grid">
+      <div>
+        <label for="mode">Modo de consulta</label>
+        <select id="mode">
+          <option value="cep" selected>CEP + fachada</option>
+          <option value="coords">Coordenadas (lat,lng)</option>
+        </select>
+        <div class="help">Modo recomendado: CEP + fachada.</div>
+      </div>
+
+      <div id="boxNumero">
+        <label for="numero">Fachada (número / complemento)</label>
+        <input id="numero" placeholder="Ex: 32 ou 32 apto 101" />
+        <div class="help">Digite o número e complemento, se houver.</div>
+      </div>
+    </div>
+
+    <div id="boxCoords" style="display:none; margin-top:8px;">
+      <label for="coords">Coordenadas</label>
+      <input id="coords" placeholder="-29.1698153,-51.2078443" />
+      <div class="help">Formato: lat,lng</div>
+    </div>
+
+    <div id="boxCep" style="margin-top:8px;">
+      <div class="grid">
+        <div>
+          <label for="cep">CEP</label>
+          <input id="cep" placeholder="95012-440" />
+          <div class="help">Pode digitar com hífen ou sem.</div>
+        </div>
+        <div>
+          <label for="endereco">Endereço encontrado</label>
+          <input id="endereco" class="readonly" readonly placeholder="Aguardando CEP..." />
+          <div class="help">A rua será preenchida automaticamente pelo CEP.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <button class="primary" id="btnConsultar">Consultar cobertura</button>
+      <button id="btnExCep">Exemplo CEP</button>
+      <button id="btnExCoords">Exemplo coords</button>
+      <button id="btnLimpar">Limpar</button>
+    </div>
+
+    <div class="card" style="margin-top:16px; padding:16px;">
+      <div style="font-weight:900; margin-bottom:8px;">Status</div>
+      <div id="status" class="status">Aguardando...</div>
+      <div id="mini" class="mini"></div>
+    </div>
+
+    <div class="card" style="margin-top:16px; padding:16px;">
+      <div style="font-weight:900; margin-bottom:10px;">Resultado</div>
+
+      <div class="resultGrid">
+        <div class="kv">
+          <div class="k">Viabilidade</div>
+          <div class="v" id="r_viab">—</div>
+        </div>
+
+        <div class="kv">
+          <div class="k">Motivo</div>
+          <div class="v" id="r_motivo">—</div>
+        </div>
+
+        <div class="kv">
+          <div class="k">
+            <span>Coords consultadas</span>
+            <button class="copyBtn" id="btnCopyCoords" disabled>Copiar</button>
+          </div>
+          <div class="v" id="r_coords">—</div>
+        </div>
+
+        <div class="kv">
+          <div class="k">
+            <span>Endereço geocodificado</span>
+            <button class="copyBtn" id="btnCopyGeo" disabled>Copiar</button>
+          </div>
+          <div class="v" id="r_geo">—</div>
+        </div>
+
+        <div class="kv">
+          <div class="k">Melhor box</div>
+          <div class="v" id="r_box">—</div>
+        </div>
+
+        <div class="kv">
+          <div class="k">Distância / Disponibilidade</div>
+          <div class="v" id="r_dist">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="coverageCta" class="coverage-cta">
+      <div class="coverage-cta-title">✅ Cobertura disponível</div>
+      <p>Encontramos viabilidade para este endereço. Clique abaixo para continuar a contratação no WhatsApp.</p>
+      <a id="btnContratarAgora" class="contract-btn" href="#" target="_blank">Contratar agora</a>
+    </div>
+  </div>
+</section>
+
+<section class="offer-strip">
+  <div class="offer-mini">
+    <strong>Internet para a casa toda</strong>
+    <span>Mais estabilidade para streaming, trabalho e vários dispositivos conectados ao mesmo tempo.</span>
+  </div>
+  <div class="offer-mini">
+    <strong>Planos com excelente custo-benefício</strong>
+    <span>Opções com fibra, chip e ponto extra para atender diferentes perfis de clientes.</span>
+  </div>
+  <div class="offer-mini">
+    <strong>Atendimento comercial rápido</strong>
+    <span>Após a consulta viável, o cliente segue direto para o WhatsApp para finalizar a contratação.</span>
+  </div>
+</section>
 
 <section id="planos">
-<h2 class="section-title">Planos Disponíveis</h2>
+  <h2 class="section-title">Planos Disponíveis</h2>
 
-<div class="plans">
+  <div class="plans">
+    <div class="plan">
+      <h3>FIBRA 500MB</h3>
+      <small>📶 Wi-Fi forte na casa toda.</small>
+      <div class="plan-price">R$ 99,90/mês</div>
+      <ul>
+        <li>100% fibra</li>
+        <li>Ideal para família conectada</li>
+        <li>Streaming sem travar</li>
+      </ul>
+      <a href="https://wa.me/5551999999999?text=Quero%20500MB" class="plan-btn" target="_blank">Contratar</a>
+    </div>
 
-<div class="plan">
-<h3>FIBRA 500MB</h3>
-<small>📶 Wi-Fi forte na casa toda.</small>
-<div class="plan-price">R$ 99,90/mês</div>
-<ul>
-<li>100% fibra</li>
-<li>Ideal para família conectada</li>
-<li>Streaming sem travar</li>
-</ul>
-<a href="https://wa.me/5551999999999?text=Quero%20500MB" class="plan-btn">Contratar</a>
-</div>
+    <div class="plan">
+      <h3>400MB + 1 CHIP (5GB)</h3>
+      <small>📱 Internet na casa e no celular</small>
+      <div class="plan-price">R$ 119,90/mês</div>
+      <ul>
+        <li>Fibra 400MB</li>
+        <li>1 chip 5GB</li>
+        <li>Ótimo custo-benefício</li>
+      </ul>
+      <a href="https://wa.me/5551999999999?text=Quero%20400MB%20%2B%205GB" class="plan-btn" target="_blank">Contratar</a>
+    </div>
 
-<div class="plan">
-<h3>400MB + 1 CHIP (5GB)</h3>
-<small>📱 Internet na casa e no celular</small>
-<div class="plan-price">R$ 119,90/mês</div>
-<ul>
-<li>Fibra 400MB</li>
-<li>1 chip 5GB</li>
-<li>Ótimo custo-benefício</li>
-</ul>
-<a href="https://wa.me/5551999999999?text=Quero%20400MB%20%2B%205GB" class="plan-btn">Contratar</a>
-</div>
+    <div class="plan">
+      <h3>500MB + Ponto Extra Wi-Fi</h3>
+      <small>📶 Sinal forte em todos os cômodos</small>
+      <div class="plan-price">R$ 119,90/mês</div>
+      <ul>
+        <li>500MB fibra</li>
+        <li>1 ponto extra Wi-Fi</li>
+        <li>Mais cobertura interna</li>
+      </ul>
+      <a href="https://wa.me/5551999999999?text=Quero%20500MB%20%2B%20Ponto%20Extra" class="plan-btn" target="_blank">Contratar</a>
+    </div>
 
-<div class="plan">
-<h3>500MB + Ponto Extra Wi-Fi</h3>
-<small>📶 Sinal forte em todos os cômodos</small>
-<div class="plan-price">R$ 119,90/mês</div>
-<ul>
-<li>500MB fibra</li>
-<li>1 ponto extra Wi-Fi</li>
-<li>Mais cobertura interna</li>
-</ul>
-<a href="https://wa.me/5551999999999?text=Quero%20500MB%20%2B%20Ponto%20Extra" class="plan-btn">Contratar</a>
-</div>
+    <div class="plan">
+      <span class="best">🏆 Mais vendido</span>
+      <h3>600MB + 1 CHIP (10GB)</h3>
+      <small>📱 Internet na casa e no celular</small>
+      <div class="plan-price">R$ 144,90/mês</div>
+      <ul>
+        <li>600MB fibra</li>
+        <li>1 chip 10GB</li>
+        <li>Alta performance</li>
+      </ul>
+      <a href="https://wa.me/5551999999999?text=Quero%20600MB%20%2B%2010GB" class="plan-btn" target="_blank">Contratar</a>
+    </div>
 
-<div class="plan">
-<span class="best">🏆 Mais vendido</span>
-<h3>600MB + 1 CHIP (10GB)</h3>
-<small>📱 Internet na casa e no celular</small>
-<div class="plan-price">R$ 144,90/mês</div>
-<ul>
-<li>600MB fibra</li>
-<li>1 chip 10GB</li>
-<li>Alta performance</li>
-</ul>
-<a href="https://wa.me/5551999999999?text=Quero%20600MB%20%2B%2010GB" class="plan-btn">Contratar</a>
-</div>
-
-<div class="plan">
-<h3>700MB + Ponto Extra Wi-Fi</h3>
-<small>🔥 Ultra velocidade máxima</small>
-<div class="plan-price">R$ 149,90/mês</div>
-<ul>
-<li>700MB fibra</li>
-<li>1 ponto extra</li>
-<li>Ideal para gamers</li>
-</ul>
-<a href="https://wa.me/5551993187300?text=Quero%20700MB%20%2B%20Ponto%20Extra" class="plan-btn">Contratar</a>
-</div>
-
-</div>
+    <div class="plan">
+      <h3>700MB + Ponto Extra Wi-Fi</h3>
+      <small>🔥 Ultra velocidade máxima</small>
+      <div class="plan-price">R$ 149,90/mês</div>
+      <ul>
+        <li>700MB fibra</li>
+        <li>1 ponto extra</li>
+        <li>Ideal para gamers</li>
+      </ul>
+      <a href="https://wa.me/5551993187300?text=Quero%20700MB%20%2B%20Ponto%20Extra" class="plan-btn" target="_blank">Contratar</a>
+    </div>
+  </div>
 </section>
 
 <section class="cities">
-<strong>Cidades atendidas:</strong><br><br>
+  <strong>Cidades atendidas:</strong><br><br>
 
-<strong>RS:</strong> Porto Alegre · Canoas · Gravataí · Cachoeirinha · Esteio · Sapucaia do Sul · São Leopoldo · Novo Hamburgo · Viamão · Capão da Canoa · Tramandaí · Xangri-lá · Santa Maria · Passo Fundo · Pelotas · Caxias do Sul · Lajeado · Venâncio Aires · Santa Cruz do Sul · Uruguaiana · Santiago · São Jerônimo · Frederico Westphalen · Charqueadas · Guaíba · Nova Santa Rita<br><br>
+  <strong>RS:</strong> Porto Alegre · Canoas · Gravataí · Cachoeirinha · Esteio · Sapucaia do Sul · São Leopoldo · Novo Hamburgo · Viamão · Capão da Canoa · Tramandaí · Xangri-lá · Santa Maria · Passo Fundo · Pelotas · Caxias do Sul · Lajeado · Venâncio Aires · Santa Cruz do Sul · Uruguaiana · Santiago · São Jerônimo · Frederico Westphalen · Charqueadas · Guaíba · Nova Santa Rita<br><br>
 
-<strong>SC:</strong> Chapecó · Xanxerê · Xaxim · Concórdia · Joaçaba · Criciúma · Blumenau · Joinville · Itajaí · Balneário Camboriú · Florianópolis · Palhoça · São José<br><br>
+  <strong>SC:</strong> Chapecó · Xanxerê · Xaxim · Concórdia · Joaçaba · Criciúma · Blumenau · Joinville · Itajaí · Balneário Camboriú · Florianópolis · Palhoça · São José<br><br>
 
-<strong>PR:</strong> Cascavel · Toledo · Guarapuava · Ponta Grossa · Umuarama · Telêmaco Borba<br><br>
+  <strong>PR:</strong> Cascavel · Toledo · Guarapuava · Ponta Grossa · Umuarama · Telêmaco Borba<br><br>
 
-<strong>SP:</strong> Itapetininga · Capão Bonito · São Miguel Arcanjo · Alambari · Buri · Ribeirão Grande · Votorantin<br><br>
+  <strong>SP:</strong> Itapetininga · Capão Bonito · São Miguel Arcanjo · Alambari · Buri · Ribeirão Grande · Votorantin<br><br>
 
-<strong>MS:</strong> Dourados · Naviraí
+  <strong>MS:</strong> Dourados · Naviraí
 </section>
 
 <footer>
-© 2025 NOME DA SUA EMPRESA - Todos os direitos reservados.
+  © 2026 WebTurbo - Todos os direitos reservados.
 </footer>
 
 </div>
+
+<script>
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbxZGS3gyYjRE7VOWBWfy0HpOk7YfVgYmbTg1EC0R3yTU99-wQDDIQkvmd2I7Xjk-iJn/exec";
+const FIXED_RADIUS = 200;
+const WHATS_NUMBER = "5551999999999";
+
+const $ = (id) => document.getElementById(id);
+
+const setStatus = (msg, type="") => {
+  const el = $("status");
+  el.textContent = msg;
+  el.className = "status" + (type ? (" " + type) : "");
+};
+
+const setMini = (msg) => $("mini").textContent = msg || "";
+
+const setCopyEnabled = (coordsText, geoText) => {
+  const hasCoords = !!(coordsText && coordsText !== "—");
+  const hasGeo = !!(geoText && geoText !== "—");
+  $("btnCopyCoords").disabled = !hasCoords;
+  $("btnCopyGeo").disabled = !hasGeo;
+};
+
+const hideContractCta = () => {
+  $("coverageCta").classList.remove("show");
+  $("btnContratarAgora").setAttribute("href", "#");
+};
+
+const showContractCta = (message) => {
+  const url = "https://wa.me/" + WHATS_NUMBER + "?text=" + encodeURIComponent(message);
+  $("btnContratarAgora").setAttribute("href", url);
+  $("coverageCta").classList.add("show");
+};
+
+const clearResult = () => {
+  $("r_viab").textContent = "—";
+  $("r_motivo").textContent = "—";
+  $("r_coords").textContent = "—";
+  $("r_geo").textContent = "—";
+  $("r_box").textContent = "—";
+  $("r_dist").textContent = "—";
+  setCopyEnabled("", "");
+  hideContractCta();
+};
+
+const fillResult = (res) => {
+  $("r_viab").textContent = res.viavel === true ? "✅ Viável" : "❌ Não viável";
+  $("r_motivo").textContent = res.motivo || "—";
+
+  const coordsText = res.coords || (res.lat != null && res.lng != null ? `${res.lat},${res.lng}` : "—");
+  $("r_coords").textContent = coordsText;
+
+  const geoText = res.endereco_geocodificado || "—";
+  $("r_geo").textContent = geoText;
+
+  if (res.box_nome) $("r_box").textContent = `${res.box_nome} (${res.box_id || "-"})`;
+  else $("r_box").textContent = "—";
+
+  const dist = (res.distancia_melhor_box !== "" && res.distancia_melhor_box != null) ? `${res.distancia_melhor_box} m` : "—";
+  const disp = (res.disponibilidade !== "" && res.disponibilidade != null) ? `${res.disponibilidade}` : "—";
+  $("r_dist").textContent = `Dist: ${dist} | Disp: ${disp}`;
+
+  setCopyEnabled(coordsText, geoText);
+};
+
+async function copyText(btnEl, text) {
+  const original = btnEl.textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+    btnEl.textContent = "Copiado!";
+    setTimeout(() => btnEl.textContent = original, 900);
+  } catch (e) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); } catch(_) {}
+    document.body.removeChild(ta);
+    btnEl.textContent = "Copiado!";
+    setTimeout(() => btnEl.textContent = original, 900);
+  }
+}
+
+$("btnCopyCoords").addEventListener("click", () => copyText($("btnCopyCoords"), $("r_coords").textContent.trim()));
+$("btnCopyGeo").addEventListener("click", () => copyText($("btnCopyGeo"), $("r_geo").textContent.trim()));
+
+function jsonpRequest(payload) {
+  return new Promise((resolve, reject) => {
+    const cbName = "cb_" + Date.now() + "_" + Math.random().toString(16).slice(2);
+
+    const timeoutMs = 15000;
+    const t = setTimeout(() => {
+      cleanup();
+      reject(new Error("Timeout na requisição."));
+    }, timeoutMs);
+
+    let script;
+
+    function cleanup() {
+      clearTimeout(t);
+      try { delete window[cbName]; } catch(e) { window[cbName] = undefined; }
+      if (script && script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    window[cbName] = (data) => {
+      cleanup();
+      resolve(data);
+    };
+
+    const url =
+      ENDPOINT +
+      "?data=" + encodeURIComponent(JSON.stringify(payload)) +
+      "&callback=" + encodeURIComponent(cbName);
+
+    script = document.createElement("script");
+    script.src = url;
+    script.async = true;
+
+    script.onerror = () => {
+      cleanup();
+      reject(new Error("Falha ao chamar o WebApp."));
+    };
+
+    document.body.appendChild(script);
+  });
+}
+
+function onlyDigits(s){
+  return String(s || "").replace(/\D/g, "");
+}
+
+async function lookupCepBrasilApi(cep) {
+  const cep8 = onlyDigits(cep);
+  if (cep8.length !== 8) return null;
+
+  const url = `https://brasilapi.com.br/api/cep/v2/${cep8}`;
+  try {
+    const res = await fetch(url, { method:"GET" });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!data || data.errors) return null;
+
+    return {
+      street: data.street || "",
+      neighborhood: data.neighborhood || "",
+      city: data.city || "",
+      state: data.state || ""
+    };
+  } catch (e) {
+    return null;
+  }
+}
+
+function toggleMode() {
+  const mode = $("mode").value;
+
+  $("boxCoords").style.display = (mode === "coords") ? "block" : "none";
+  $("boxCep").style.display = (mode === "cep") ? "block" : "none";
+  $("boxNumero").style.display = (mode === "cep") ? "block" : "none";
+
+  setStatus("Aguardando...");
+  setMini("");
+  $("endereco").value = "";
+  clearResult();
+}
+
+async function refreshEnderecoPreview() {
+  const cep = $("cep").value;
+  const numero = $("numero").value.trim();
+
+  $("endereco").value = "Buscando rua pelo CEP...";
+  const data = await lookupCepBrasilApi(cep);
+
+  if (!data || !data.street) {
+    $("endereco").value = "CEP inválido ou indisponível";
+    return null;
+  }
+
+  const ruaNumero = [data.street, numero].filter(Boolean).join(", ");
+  const cidadeUf = [data.city, data.state].filter(Boolean).join(" - ");
+
+  $("endereco").value = [ruaNumero, cidadeUf].filter(Boolean).join(" | ");
+  return { data, ruaNumero };
+}
+
+function buildWhatsappMessage(res) {
+  const mode = $("mode").value;
+  const coordsText = res.coords || $("r_coords").textContent.trim();
+  const geoText = res.endereco_geocodificado || $("r_geo").textContent.trim();
+
+  if (mode === "cep") {
+    const cep = $("cep").value.trim();
+    const numero = $("numero").value.trim();
+    return `Olá! Consultei a cobertura no site e deu viável.
+
+CEP: ${cep}
+Fachada: ${numero}
+Endereço geocodificado: ${geoText}
+Coords: ${coordsText}
+
+Quero contratar agora.`;
+  }
+
+  return `Olá! Consultei a cobertura no site por coordenadas e deu viável.
+
+Coords: ${coordsText}
+Endereço geocodificado: ${geoText}
+
+Quero contratar agora.`;
+}
+
+async function consultar() {
+  const mode = $("mode").value;
+
+  $("btnConsultar").disabled = true;
+  setStatus("Consultando...");
+  setMini("");
+  clearResult();
+
+  try {
+    let payload = { radius: FIXED_RADIUS };
+
+    if (mode === "coords") {
+      const coords = $("coords").value.trim();
+
+      if (!coords) {
+        setStatus("Informe as coordenadas para consultar.", "err");
+        setMini("Exemplo: -29.1698153,-51.2078443");
+        return;
+      }
+
+      payload.coords = coords;
+    } else {
+      const cep = $("cep").value.trim();
+      const numero = $("numero").value.trim();
+
+      if (!cep) {
+        setStatus("Informe o CEP para consultar.", "err");
+        setMini("Digite um CEP válido.");
+        return;
+      }
+
+      if (!numero) {
+        setStatus("Informe a fachada para consultar.", "err");
+        setMini("Digite o número ou complemento do endereço.");
+        return;
+      }
+
+      const preview = await refreshEnderecoPreview();
+
+      if (!preview) {
+        setStatus("Erro: CEP inválido/indisponível.", "err");
+        setMini("Digite um CEP válido e tente novamente.");
+        return;
+      }
+
+      payload.cep = onlyDigits(cep);
+      payload.fachada = preview.ruaNumero;
+    }
+
+    const res = await jsonpRequest(payload);
+
+    if (res && res.ok === true) {
+      fillResult(res);
+      setStatus(res.viavel ? "✅ Cobertura disponível" : "❌ Cobertura indisponível", res.viavel ? "ok" : "err");
+
+      const extras = [];
+      extras.push(`raio: ${FIXED_RADIUS}m`);
+      if (res.coords) extras.push(`coords: ${res.coords}`);
+      if (res.box_nome) extras.push(`box: ${res.box_nome}`);
+      if (res.ms != null) extras.push(`ms: ${res.ms}`);
+      setMini(extras.join(" | "));
+
+      if (res.viavel === true) {
+        const msg = buildWhatsappMessage(res);
+        showContractCta(msg);
+      } else {
+        hideContractCta();
+      }
+    } else {
+      setStatus("Erro: " + (res && res.motivo ? res.motivo : "resposta inválida"), "err");
+      if (res && res.detalhe) setMini(res.detalhe);
+      hideContractCta();
+    }
+  } catch (err) {
+    setStatus("Erro na consulta.", "err");
+    setMini(String(err.message || err));
+    hideContractCta();
+  } finally {
+    $("btnConsultar").disabled = false;
+  }
+}
+
+function bindEnterToSearch(el) {
+  el.addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter") {
+      ev.preventDefault();
+      consultar();
+    }
+  });
+}
+
+bindEnterToSearch($("coords"));
+bindEnterToSearch($("cep"));
+bindEnterToSearch($("numero"));
+
+$("mode").addEventListener("change", toggleMode);
+
+$("cep").addEventListener("blur", async () => {
+  if ($("mode").value === "cep" && $("cep").value.trim()) {
+    await refreshEnderecoPreview();
+  }
+});
+
+$("numero").addEventListener("blur", async () => {
+  if ($("mode").value === "cep" && $("cep").value.trim()) {
+    await refreshEnderecoPreview();
+  }
+});
+
+$("btnConsultar").addEventListener("click", consultar);
+
+$("btnExCoords").addEventListener("click", () => {
+  $("mode").value = "coords";
+  toggleMode();
+  $("coords").value = "-29.1698153,-51.2078443";
+});
+
+$("btnExCep").addEventListener("click", async () => {
+  $("mode").value = "cep";
+  toggleMode();
+  $("cep").value = "95012-440";
+  $("numero").value = "32";
+  await refreshEnderecoPreview();
+});
+
+$("btnLimpar").addEventListener("click", () => {
+  $("coords").value = "";
+  $("cep").value = "";
+  $("numero").value = "";
+  $("endereco").value = "";
+  setStatus("Aguardando...");
+  setMini("");
+  clearResult();
+});
+
+toggleMode();
+</script>
 </body>
 </html>
