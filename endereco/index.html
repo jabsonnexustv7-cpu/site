@@ -250,6 +250,7 @@
     const DEFAULT_ZOOM = 16;
     const STATIC_SIZE = '900x420';
     const COUNTRY = 'br';
+    const GEOCODER_REGION = 'BR';
 
     // =========================
     // ESTADO
@@ -258,6 +259,7 @@
     let marker;
     let selectedPlace = null;
     let currentPayload = null;
+    let geocoder = null;
 
     const autocompleteEl = document.getElementById('autocomplete');
     const numeroEl = document.getElementById('numero');
@@ -324,27 +326,53 @@
       return `https://www.google.com/maps?q=${encodeURIComponent(`${lat},${lng}`)}`;
     }
 
-    function updateOutputs() {
-      if (!selectedPlace?.location) return;
+    function extractPartsFromComponents(components) {
+      return {
+        route: extractComponent(components, 'route'),
+        streetNumber: extractComponent(components, 'street_number'),
+        neighborhood: extractComponent(components, 'neighborhood') || extractComponent(components, 'sublocality_level_1') || extractComponent(components, 'sublocality'),
+        city: extractComponent(components, 'administrative_area_level_2') || extractComponent(components, 'locality'),
+        state: extractComponent(components, 'administrative_area_level_1'),
+        postalCode: extractComponent(components, 'postal_code')
+      };
+    }
 
-      const lat = Number(selectedPlace.location.lat()).toFixed(6);
-      const lng = Number(selectedPlace.location.lng()).toFixed(6);
-      const enderecoFormatado = formatAddress(selectedPlace);
+    function formatAddressFromParts(parts) {
+      const streetNumber = esc(numeroEl.value) || parts.streetNumber || '';
+      const complemento = esc(complementoEl.value);
+      const list = [];
+      const line1 = [parts.route, streetNumber].filter(Boolean).join(', ');
+      if (line1) list.push(line1);
+      if (complemento) list.push(complemento);
+      if (parts.neighborhood) list.push(parts.neighborhood);
+      if (parts.city) list.push(parts.city);
+      if (parts.state) list.push(parts.state);
+      if (parts.postalCode) list.push(parts.postalCode);
+      return list.join(' - ');
+    }
+
+    function updateOutputsFromResolved(parts, lat, lng, placeId = '') {
+      const enderecoFormatado = formatAddressFromParts(parts);
       const mapaUrl = buildStaticMapUrl(lat, lng);
       const mapsLink = buildMapsLink(lat, lng);
 
       currentPayload = {
         ok: true,
         endereco_formatado: enderecoFormatado,
-        numero: esc(numeroEl.value),
+        rua: parts.route || '',
+        numero: esc(numeroEl.value) || parts.streetNumber || '',
         complemento: esc(complementoEl.value),
+        bairro: parts.neighborhood || '',
+        cidade: parts.city || '',
+        uf: parts.state || '',
+        cep: parts.postalCode || '',
         lat,
         lng,
         TxtCoordenadas: `${lat},${lng}`,
         mapa_url: mapaUrl,
         maps_link: mapsLink,
-        place_id: selectedPlace.id || selectedPlace.placeId || '',
-        ver: 'mini-site-github-v1'
+        place_id: placeId,
+        ver: 'mini-site-github-v2'
       };
 
       obsEl.value = enderecoFormatado;
@@ -354,10 +382,66 @@
       setStatus('Endereço localizado. Confira no mapa e toque em Confirmar endereço.', 'ok');
     }
 
+    function resolveTypedAddress() {
+      return new Promise((resolve, reject) => {
+        const typed = (autocompleteEl.value || autocompleteEl.getAttribute('value') || '').trim();
+        const numero = esc(numeroEl.value);
+        const complemento = esc(complementoEl.value);
+        const queryBase = [typed, numero].filter(Boolean).join(', ');
+        const query = [queryBase, complemento].filter(Boolean).join(' - ');
+
+        if (!typed) {
+          reject(new Error('Digite um endereço para continuar.'));
+          return;
+        }
+        if (!geocoder) {
+          reject(new Error('Geocoder não inicializado.'));
+          return;
+        }
+
+        geocoder.geocode(
+          {
+            address: query,
+            componentRestrictions: { country: COUNTRY },
+            region: GEOCODER_REGION
+          },
+          (results, status) => {
+            if (status !== 'OK' || !results || !results.length) {
+              reject(new Error('Não encontramos esse endereço. Tente selecionar uma sugestão mais específica.'));
+              return;
+            }
+
+            const best = results[0];
+            const location = best.geometry?.location;
+            if (!location) {
+              reject(new Error('Não foi possível obter a localização desse endereço.'));
+              return;
+            }
+
+            const parts = extractPartsFromComponents(best.address_components || []);
+            const lat = Number(location.lat()).toFixed(6);
+            const lng = Number(location.lng()).toFixed(6);
+            resolve({ parts, lat, lng, placeId: best.place_id || '' });
+          }
+        );
+      });
+    },${lng}`)}`;
+    }
+
+    function updateOutputs() {
+      if (!selectedPlace?.location) return;
+
+      const lat = Number(selectedPlace.location.lat()).toFixed(6);
+      const lng = Number(selectedPlace.location.lng()).toFixed(6);
+      const parts = extractPartsFromComponents(selectedPlace.addressComponents || []);
+      updateOutputsFromResolved(parts, lat, lng, selectedPlace.id || selectedPlace.placeId || '');
+    }
+
     async function initMapAndAutocomplete() {
       const { Map } = await google.maps.importLibrary('maps');
       await google.maps.importLibrary('places');
       const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
+      geocoder = new google.maps.Geocoder();
 
       map = new Map(document.getElementById('map'), {
         center: { lat: -30.0346, lng: -51.2177 },
@@ -425,17 +509,25 @@
       window.open(currentPayload.maps_link, '_blank', 'noopener,noreferrer');
     });
 
-    btnConfirmar.addEventListener('click', () => {
-      if (!currentPayload) {
-        setStatus('Selecione um endereço antes de confirmar.', 'err');
-        return;
+    btnConfirmar.addEventListener('click', async () => {
+      try {
+        if (selectedPlace?.location) {
+          updateOutputs();
+          setStatus('Endereço confirmado com sucesso.', 'ok');
+          return;
+        }
+
+        setStatus('Localizando endereço...', '');
+        const resolved = await resolveTypedAddress();
+        marker.position = { lat: Number(resolved.lat), lng: Number(resolved.lng) };
+        map.setCenter({ lat: Number(resolved.lat), lng: Number(resolved.lng) });
+        map.setZoom(DEFAULT_ZOOM);
+        updateOutputsFromResolved(resolved.parts, resolved.lat, resolved.lng, resolved.placeId);
+        setStatus('Endereço confirmado com sucesso.', 'ok');
+      } catch (error) {
+        console.error(error);
+        setStatus(error.message || 'Não foi possível localizar esse endereço.', 'err');
       }
-
-      // EXEMPLO OPCIONAL:
-      // Aqui você pode integrar com um endpoint seu ou redirecionar com parâmetros.
-      // Ex.: window.location.href = `https://SEU-ENDPOINT?payload=${encodeURIComponent(JSON.stringify(currentPayload))}`;
-
-      setStatus('Endereço confirmado com sucesso.', 'ok');
     });
 
     window.initMiniSite = initMapAndAutocomplete;
