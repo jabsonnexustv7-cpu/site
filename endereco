@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirmação de Endereço</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --muted: #94a3b8;
+      --text: #e5e7eb;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --border: rgba(255,255,255,.08);
+      --success: #16a34a;
+      --danger: #dc2626;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .wrap {
+      width: min(980px, calc(100vw - 20px));
+      margin: 10px auto 24px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .card {
+      background: rgba(17,24,39,.96);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.22);
+      backdrop-filter: blur(6px);
+    }
+    h1 {
+      font-size: 24px;
+      line-height: 1.15;
+      margin: 0 0 6px;
+    }
+    .sub {
+      color: var(--muted);
+      margin: 0 0 18px;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin: 14px 0 8px;
+      font-size: 14px;
+    }
+    input, textarea, button {
+      font: inherit;
+    }
+    .field, .input-like {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      padding: 14px 14px;
+      outline: none;
+      transition: .18s ease;
+    }
+    .field:focus, .input-like:focus-within {
+      border-color: rgba(37,99,235,.72);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.18);
+    }
+    .input-like {
+      padding: 8px 10px;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+    gmp-place-autocomplete {
+      width: 100%;
+      color-scheme: dark;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 18px;
+      min-height: 50px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: .18s ease;
+      width: 100%;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-secondary {
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,.12); }
+    .map {
+      width: 100%;
+      height: 260px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+    }
+    .preview {
+      width: 100%;
+      border-radius: 18px;
+      margin-top: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      display: none;
+    }
+    .out {
+      min-height: 164px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+    .status {
+      min-height: 22px;
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .ok { color: #4ade80; }
+    .err { color: #f87171; }
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+      margin-top: 10px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: rgba(37,99,235,.15);
+      border: 1px solid rgba(37,99,235,.28);
+      color: #bfdbfe;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+    @media (min-width: 860px) {
+      .wrap {
+        width: min(980px, calc(100vw - 28px));
+        margin: 24px auto;
+        grid-template-columns: 1.05fr .95fr;
+        gap: 18px;
+      }
+      .row {
+        grid-template-columns: 1fr 1fr;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .btn {
+        width: auto;
+      }
+      .map {
+        height: 340px;
+        border-radius: 18px;
+      }
+      h1 {
+        font-size: 26px;
+      }
+      .card {
+        padding: 18px;
+        border-radius: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="card">
+      <div class="pill">Confirmação rápida de endereço</div>
+      <h1>Confirme seu endereço</h1>
+      <p class="sub">
+        Digite seu endereço, selecione a opção correta e confira o local no mapa. Depois toque em <strong>Confirmar endereço</strong> para continuar.
+      </p>
+
+      <label>Digite seu endereço</label>
+      <div class="input-like">
+        <gmp-place-autocomplete id="autocomplete"></gmp-place-autocomplete>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="numero">Número</label>
+          <input id="numero" class="field" inputmode="numeric" placeholder="Número" />
+        </div>
+        <div>
+          <label for="complemento">Complemento</label>
+          <input id="complemento" class="field" placeholder="Complemento (opcional)" />
+        </div>
+      </div>
+
+      <label for="obs">Confira seu endereço</label>
+      <textarea id="obs" class="field out" readonly></textarea>
+
+      <div class="actions">
+        <button id="btnConfirmar" class="btn btn-primary" type="button">Confirmar endereço</button>
+        <button id="btnCopiar" class="btn btn-secondary" type="button">Copiar dados</button>
+        <button id="btnAbrirMaps" class="btn btn-secondary" type="button">Abrir no mapa</button>
+      </div>
+
+      <div id="status" class="status">Selecione seu endereço para visualizar o local no mapa.</div>
+      <div class="small">
+        Preencha o endereço com atenção. O mapa ajuda a confirmar se o local encontrado está correto antes de continuar.
+      </div>
+    </section>
+
+    <aside class="card">
+      <div id="map" class="map"></div>
+      <img id="staticPreview" class="preview" alt="Prévia do mapa estático" />
+
+      <label for="payload">Dados gerados</label>
+      <textarea id="payload" class="field out" readonly></textarea>
+      <div class="small">
+        Aqui ficam os dados do endereço confirmado, incluindo localização e links do mapa.
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    // =========================
+    // CONFIGURE AQUI
+    // =========================
+    const GOOGLE_MAPS_API_KEY = 'AIzaSyAiZg6hvX1FsFBBk6cFHD6tr5bQiBWBF2Q';
+    const DEFAULT_ZOOM = 16;
+    const STATIC_SIZE = '900x420';
+    const COUNTRY = 'br';
+
+    // =========================
+    // ESTADO
+    // =========================
+    let map;
+    let marker;
+    let selectedPlace = null;
+    let currentPayload = null;
+
+    const autocompleteEl = document.getElementById('autocomplete');
+    const numeroEl = document.getElementById('numero');
+    const complementoEl = document.getElementById('complemento');
+    const obsEl = document.getElementById('obs');
+    const payloadEl = document.getElementById('payload');
+    const statusEl = document.getElementById('status');
+    const staticPreviewEl = document.getElementById('staticPreview');
+    const btnConfirmar = document.getElementById('btnConfirmar');
+    const btnCopiar = document.getElementById('btnCopiar');
+    const btnAbrirMaps = document.getElementById('btnAbrirMaps');
+
+    function setStatus(message, kind = '') {
+      statusEl.textContent = message;
+      statusEl.className = 'status';
+      if (kind) statusEl.classList.add(kind);
+    }
+
+    function esc(value) {
+      return String(value ?? '').trim();
+    }
+
+    function extractComponent(components, wantedType) {
+      const found = components.find(c => (c.types || []).includes(wantedType));
+      return found?.longText || found?.shortText || '';
+    }
+
+    function formatAddress(place) {
+      const components = place.addressComponents || [];
+      const route = extractComponent(components, 'route');
+      const streetNumber = esc(numeroEl.value) || extractComponent(components, 'street_number');
+      const sublocality = extractComponent(components, 'sublocality_level_1') || extractComponent(components, 'sublocality');
+      const neighborhood = extractComponent(components, 'neighborhood') || sublocality;
+      const city = extractComponent(components, 'administrative_area_level_2') || extractComponent(components, 'locality');
+      const state = extractComponent(components, 'administrative_area_level_1');
+      const postalCode = extractComponent(components, 'postal_code');
+      const complemento = esc(complementoEl.value);
+
+      const parts = [];
+      const line1 = [route, streetNumber].filter(Boolean).join(', ');
+      if (line1) parts.push(line1);
+      if (complemento) parts.push(complemento);
+      if (neighborhood) parts.push(neighborhood);
+      if (city) parts.push(city);
+      if (state) parts.push(state);
+      if (postalCode) parts.push(postalCode);
+
+      return parts.join(' - ');
+    }
+
+    function buildStaticMapUrl(lat, lng) {
+      const base = 'https://maps.googleapis.com/maps/api/staticmap';
+      const params = new URLSearchParams({
+        center: `${lat},${lng}`,
+        zoom: String(DEFAULT_ZOOM),
+        size: STATIC_SIZE,
+        markers: `color:red|${lat},${lng}`,
+        key: GOOGLE_MAPS_API_KEY,
+      });
+      return `${base}?${params.toString()}`;
+    }
+
+    function buildMapsLink(lat, lng) {
+      return `https://www.google.com/maps?q=${encodeURIComponent(`${lat},${lng}`)}`;
+    }
+
+    function updateOutputs() {
+      if (!selectedPlace?.location) return;
+
+      const lat = Number(selectedPlace.location.lat()).toFixed(6);
+      const lng = Number(selectedPlace.location.lng()).toFixed(6);
+      const enderecoFormatado = formatAddress(selectedPlace);
+      const mapaUrl = buildStaticMapUrl(lat, lng);
+      const mapsLink = buildMapsLink(lat, lng);
+
+      currentPayload = {
+        ok: true,
+        endereco_formatado: enderecoFormatado,
+        numero: esc(numeroEl.value),
+        complemento: esc(complementoEl.value),
+        lat,
+        lng,
+        TxtCoordenadas: `${lat},${lng}`,
+        mapa_url: mapaUrl,
+        maps_link: mapsLink,
+        place_id: selectedPlace.id || selectedPlace.placeId || '',
+        ver: 'mini-site-github-v1'
+      };
+
+      obsEl.value = enderecoFormatado;
+      payloadEl.value = JSON.stringify(currentPayload, null, 2);
+      staticPreviewEl.src = mapaUrl;
+      staticPreviewEl.style.display = 'block';
+      setStatus('Endereço localizado. Confira no mapa e toque em Confirmar endereço.', 'ok');
+    }
+
+    async function initMapAndAutocomplete() {
+      const { Map } = await google.maps.importLibrary('maps');
+      await google.maps.importLibrary('places');
+      const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
+
+      map = new Map(document.getElementById('map'), {
+        center: { lat: -30.0346, lng: -51.2177 },
+        zoom: 12,
+        mapId: 'DEMO_MAP_ID'
+      });
+
+      marker = new AdvancedMarkerElement({
+        map,
+        position: { lat: -30.0346, lng: -51.2177 }
+      });
+
+      // Limita para Brasil
+      autocompleteEl.componentRestrictions = { country: COUNTRY };
+      autocompleteEl.locationBias = { radius: 50000, center: { lat: -30.0346, lng: -51.2177 } };
+      autocompleteEl.types = ['address'];
+
+      autocompleteEl.addEventListener('gmp-select', async ({ placePrediction }) => {
+        try {
+          const place = placePrediction.toPlace();
+          await place.fetchFields({
+            fields: ['id', 'displayName', 'formattedAddress', 'location', 'addressComponents']
+          });
+
+          selectedPlace = place;
+          const loc = place.location;
+          marker.position = loc;
+          map.setCenter(loc);
+          map.setZoom(DEFAULT_ZOOM);
+
+          updateOutputs();
+        } catch (error) {
+          console.error(error);
+          setStatus('Não foi possível carregar os detalhes do endereço.', 'err');
+        }
+      });
+    }
+
+    numeroEl.addEventListener('input', () => {
+      if (selectedPlace) updateOutputs();
+    });
+
+    complementoEl.addEventListener('input', () => {
+      if (selectedPlace) updateOutputs();
+    });
+
+    btnCopiar.addEventListener('click', async () => {
+      if (!currentPayload) {
+        setStatus('Selecione um endereço antes de copiar.', 'err');
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(JSON.stringify(currentPayload));
+        setStatus('Dados copiados com sucesso.', 'ok');
+      } catch {
+        setStatus('Não foi possível copiar automaticamente.', 'err');
+      }
+    });
+
+    btnAbrirMaps.addEventListener('click', () => {
+      if (!currentPayload?.maps_link) {
+        setStatus('Selecione um endereço antes de abrir o mapa.', 'err');
+        return;
+      }
+      window.open(currentPayload.maps_link, '_blank', 'noopener,noreferrer');
+    });
+
+    btnConfirmar.addEventListener('click', () => {
+      if (!currentPayload) {
+        setStatus('Selecione um endereço antes de confirmar.', 'err');
+        return;
+      }
+
+      // EXEMPLO OPCIONAL:
+      // Aqui você pode integrar com um endpoint seu ou redirecionar com parâmetros.
+      // Ex.: window.location.href = `https://SEU-ENDPOINT?payload=${encodeURIComponent(JSON.stringify(currentPayload))}`;
+
+      setStatus('Endereço confirmado com sucesso.', 'ok');
+    });
+
+    window.initMiniSite = initMapAndAutocomplete;
+  </script>
+
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=COLE_SUA_API_KEY_AQUI&v=weekly&libraries=places&callback=initMiniSite"
+    async
+    defer></script>
+</body>
+</html>
