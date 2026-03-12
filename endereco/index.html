@@ -201,11 +201,10 @@
 
       <div class="actions">
         <button id="btnConfirmar" class="btn btn-primary" type="button">Confirmar endereço</button>
-        <button id="btnCopiar" class="btn btn-secondary" type="button">Copiar dados</button>
         <button id="btnAbrirMaps" class="btn btn-secondary" type="button">Abrir no mapa</button>
       </div>
 
-      <div id="status" class="status">Digite o endereço e selecione uma sugestão. Se preferir, toque em Confirmar endereço e tentaremos localizar automaticamente.</div>
+      <div id="status" class="status">Digite o endereço e confirme se o local exibido no mapa está correto.</div>
       <div class="small">
         Preencha o endereço com atenção. O mapa ajuda a confirmar se o local encontrado está correto antes de continuar.
       </div>
@@ -214,12 +213,9 @@
     <aside class="card">
       <div id="map" class="map"></div>
       <img id="staticPreview" class="preview" alt="Prévia do mapa estático" />
+      <div class="small">Confira o ponto no mapa antes de continuar.</div>
 
-      <label for="payload">Dados gerados</label>
-      <textarea id="payload" class="field out" readonly></textarea>
-      <div class="small">
-        Aqui ficam os dados do endereço confirmado, incluindo localização e links do mapa.
-      </div>
+      <textarea id="payload" style="display:none"></textarea>
     </aside>
   </div>
 
@@ -244,9 +240,7 @@
     const payloadEl = document.getElementById('payload');
     const statusEl = document.getElementById('status');
     const staticPreviewEl = document.getElementById('staticPreview');
-    const btnConfirmar = document.getElementById('btnConfirmar');
-    const btnCopiar = document.getElementById('btnCopiar');
-    const btnAbrirMaps = document.getElementById('btnAbrirMaps');
+    const btnConfirmar = document.getElementById('btnConfirmar');    const btnAbrirMaps = document.getElementById('btnAbrirMaps');
 
     function setStatus(message, kind = '') {
       statusEl.textContent = message;
@@ -332,7 +326,7 @@
       payloadEl.value = JSON.stringify(currentPayload, null, 2);
       staticPreviewEl.src = mapaUrl;
       staticPreviewEl.style.display = 'block';
-      setStatus('Endereço localizado. Confira no mapa e toque em Confirmar endereço.', 'ok');
+      setStatus('Endereço localizado. Confira o ponto no mapa e confirme para continuar.', 'ok');
     }
 
     function updateMap(lat, lng) {
@@ -466,18 +460,7 @@
       }
     });
 
-    btnCopiar.addEventListener('click', async () => {
-      if (!currentPayload) {
-        setStatus('Localize um endereço antes de copiar.', 'err');
-        return;
-      }
-      try {
-        await navigator.clipboard.writeText(JSON.stringify(currentPayload));
-        setStatus('Dados copiados com sucesso.', 'ok');
-      } catch {
-        setStatus('Não foi possível copiar automaticamente.', 'err');
-      }
-    });
+    
 
     btnAbrirMaps.addEventListener('click', () => {
       if (!currentPayload?.maps_link) {
