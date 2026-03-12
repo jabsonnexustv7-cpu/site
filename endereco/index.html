@@ -183,13 +183,9 @@
       </p>
 
       <label for="addressInput">Digite seu endereço</label>
-      <input id="addressInput" class="field" type="text" autocomplete="off" placeholder="Ex.: Rua Coronel Evaristo" />
+      <input id="addressInput" class="field" type="text" autocomplete="off" placeholder="Ex.: Rua Coronel Evaristo 1366, Taquara" />
 
-      <div class="row">
-        <div>
-          <label for="numero">Número</label>
-          <input id="numero" class="field" inputmode="numeric" placeholder="Número" />
-        </div>
+      
         <div>
           <label for="complemento">Complemento</label>
           <input id="complemento" class="field" placeholder="Complemento (opcional)" />
@@ -234,8 +230,8 @@
     let currentPayload = null;
 
     const addressInputEl = document.getElementById('addressInput');
-    const numeroEl = document.getElementById('numero');
-    const complementoEl = document.getElementById('complemento');
+    
+    
     const obsEl = document.getElementById('obs');
     const payloadEl = document.getElementById('payload');
     const statusEl = document.getElementById('status');
@@ -269,8 +265,8 @@
     }
 
     function formatAddressFromParts(parts) {
-      const streetNumber = esc(numeroEl.value) || parts.streetNumber || '';
-      const complemento = esc(complementoEl.value);
+      const streetNumber = parts.streetNumber || '';
+      const complemento = '';
       const list = [];
       const line1 = [parts.route, streetNumber].filter(Boolean).join(', ');
       if (line1) list.push(line1);
@@ -340,8 +336,8 @@
     function resolveTypedAddress() {
       return new Promise((resolve, reject) => {
         const typed = esc(addressInputEl.value);
-        const numero = esc(numeroEl.value);
-        const complemento = esc(complementoEl.value);
+        const numero = '';
+        const complemento = '';
         const queryBase = [typed, numero].filter(Boolean).join(', ');
         const query = [queryBase, complemento].filter(Boolean).join(' - ');
 
@@ -428,33 +424,13 @@
       });
     }
 
-    numeroEl.addEventListener('input', () => {
-      if (currentPayload) {
-        currentPayload.numero = esc(numeroEl.value);
-        obsEl.value = formatAddressFromParts({
-          route: currentPayload.rua,
-          streetNumber: currentPayload.numero,
-          neighborhood: currentPayload.bairro,
-          city: currentPayload.cidade,
-          state: currentPayload.uf,
-          postalCode: currentPayload.cep
-        });
+    
         currentPayload.endereco_formatado = obsEl.value;
         payloadEl.value = JSON.stringify(currentPayload, null, 2);
       }
     });
 
-    complementoEl.addEventListener('input', () => {
-      if (currentPayload) {
-        currentPayload.complemento = esc(complementoEl.value);
-        obsEl.value = formatAddressFromParts({
-          route: currentPayload.rua,
-          streetNumber: currentPayload.numero,
-          neighborhood: currentPayload.bairro,
-          city: currentPayload.cidade,
-          state: currentPayload.uf,
-          postalCode: currentPayload.cep
-        });
+    
         currentPayload.endereco_formatado = obsEl.value;
         payloadEl.value = JSON.stringify(currentPayload, null, 2);
       }
