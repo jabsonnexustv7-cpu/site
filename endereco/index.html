@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Confirmação de Endereço</title>
+  <title>Confirmar endereço</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -46,7 +46,7 @@
     }
     .sub {
       color: var(--muted);
-      margin: 0 0 18px;
+      margin: 0 0 16px;
       line-height: 1.5;
       font-size: 14px;
     }
@@ -59,28 +59,19 @@
     input, textarea, button {
       font: inherit;
     }
-    .field, .input-like {
+    .field {
       width: 100%;
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.04);
       color: var(--text);
-      padding: 8px 10px;
+      padding: 14px 14px;
       outline: none;
       transition: .18s ease;
-      min-height: 56px;
-      display: flex;
-      align-items: center;
-      position: relative;
-      overflow: visible;
-      z-index: 20;
     }
-    gmp-place-autocomplete {
-      width: 100%;
-      display: block;
-      color-scheme: dark;
-      position: relative;
-      z-index: 30;
+    .field:focus {
+      border-color: rgba(37,99,235,.72);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.18);
     }
     .row {
       display: grid;
@@ -123,13 +114,13 @@
     }
     .preview {
       width: 100%;
-      border-radius: 18px;
+      border-radius: 16px;
       margin-top: 14px;
       border: 1px solid rgba(255,255,255,.08);
       display: none;
     }
     .out {
-      min-height: 164px;
+      min-height: 154px;
       resize: vertical;
       line-height: 1.45;
     }
@@ -159,6 +150,13 @@
       font-size: 12px;
       margin-bottom: 12px;
     }
+    .pac-container {
+      z-index: 99999 !important;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      overflow: hidden;
+      box-shadow: 0 12px 28px rgba(0,0,0,.25);
+    }
     @media (min-width: 860px) {
       .wrap {
         width: min(980px, calc(100vw - 28px));
@@ -166,27 +164,12 @@
         grid-template-columns: 1.05fr .95fr;
         gap: 18px;
       }
-      .row {
-        grid-template-columns: 1fr 1fr;
-      }
-      .actions {
-        display: flex;
-        flex-wrap: wrap;
-      }
-      .btn {
-        width: auto;
-      }
-      .map {
-        height: 340px;
-        border-radius: 18px;
-      }
-      h1 {
-        font-size: 26px;
-      }
-      .card {
-        padding: 18px;
-        border-radius: 20px;
-      }
+      .row { grid-template-columns: 1fr 1fr; }
+      .actions { display: flex; flex-wrap: wrap; }
+      .btn { width: auto; }
+      .map { height: 340px; border-radius: 18px; }
+      h1 { font-size: 26px; }
+      .card { padding: 18px; border-radius: 20px; }
     }
   </style>
 </head>
@@ -199,10 +182,8 @@
         Digite seu endereço, selecione a opção correta e confira o local no mapa. Depois toque em <strong>Confirmar endereço</strong> para continuar.
       </p>
 
-      <label>Digite seu endereço</label>
-      <div class="input-like">
-        <gmp-place-autocomplete id="autocomplete"></gmp-place-autocomplete>
-      </div>
+      <label for="addressInput">Digite seu endereço</label>
+      <input id="addressInput" class="field" type="text" autocomplete="off" placeholder="Ex.: Rua Coronel Evaristo" />
 
       <div class="row">
         <div>
@@ -224,7 +205,7 @@
         <button id="btnAbrirMaps" class="btn btn-secondary" type="button">Abrir no mapa</button>
       </div>
 
-      <div id="status" class="status">Selecione seu endereço para visualizar o local no mapa.</div>
+      <div id="status" class="status">Digite o endereço e selecione uma sugestão. Se preferir, toque em Confirmar endereço e tentaremos localizar automaticamente.</div>
       <div class="small">
         Preencha o endereço com atenção. O mapa ajuda a confirmar se o local encontrado está correto antes de continuar.
       </div>
@@ -243,25 +224,20 @@
   </div>
 
   <script>
-    // =========================
-    // CONFIGURE AQUI
-    // =========================
     const GOOGLE_MAPS_API_KEY = 'AIzaSyAiZg6hvX1FsFBBk6cFHD6tr5bQiBWBF2Q';
     const DEFAULT_ZOOM = 16;
     const STATIC_SIZE = '900x420';
     const COUNTRY = 'br';
     const GEOCODER_REGION = 'BR';
 
-    // =========================
-    // ESTADO
-    // =========================
     let map;
     let marker;
+    let geocoder;
+    let autocomplete;
     let selectedPlace = null;
     let currentPayload = null;
-    let geocoder = null;
 
-    const autocompleteEl = document.getElementById('autocomplete');
+    const addressInputEl = document.getElementById('addressInput');
     const numeroEl = document.getElementById('numero');
     const complementoEl = document.getElementById('complemento');
     const obsEl = document.getElementById('obs');
@@ -284,46 +260,7 @@
 
     function extractComponent(components, wantedType) {
       const found = components.find(c => (c.types || []).includes(wantedType));
-      return found?.longText || found?.shortText || '';
-    }
-
-    function formatAddress(place) {
-      const components = place.addressComponents || [];
-      const route = extractComponent(components, 'route');
-      const streetNumber = esc(numeroEl.value) || extractComponent(components, 'street_number');
-      const sublocality = extractComponent(components, 'sublocality_level_1') || extractComponent(components, 'sublocality');
-      const neighborhood = extractComponent(components, 'neighborhood') || sublocality;
-      const city = extractComponent(components, 'administrative_area_level_2') || extractComponent(components, 'locality');
-      const state = extractComponent(components, 'administrative_area_level_1');
-      const postalCode = extractComponent(components, 'postal_code');
-      const complemento = esc(complementoEl.value);
-
-      const parts = [];
-      const line1 = [route, streetNumber].filter(Boolean).join(', ');
-      if (line1) parts.push(line1);
-      if (complemento) parts.push(complemento);
-      if (neighborhood) parts.push(neighborhood);
-      if (city) parts.push(city);
-      if (state) parts.push(state);
-      if (postalCode) parts.push(postalCode);
-
-      return parts.join(' - ');
-    }
-
-    function buildStaticMapUrl(lat, lng) {
-      const base = 'https://maps.googleapis.com/maps/api/staticmap';
-      const params = new URLSearchParams({
-        center: `${lat},${lng}`,
-        zoom: String(DEFAULT_ZOOM),
-        size: STATIC_SIZE,
-        markers: `color:red|${lat},${lng}`,
-        key: GOOGLE_MAPS_API_KEY,
-      });
-      return `${base}?${params.toString()}`;
-    }
-
-    function buildMapsLink(lat, lng) {
-      return `https://www.google.com/maps?q=${encodeURIComponent(`${lat},${lng}`)}`;
+      return found?.long_name || found?.short_name || '';
     }
 
     function extractPartsFromComponents(components) {
@@ -351,6 +288,22 @@
       return list.join(' - ');
     }
 
+    function buildStaticMapUrl(lat, lng) {
+      const base = 'https://maps.googleapis.com/maps/api/staticmap';
+      const params = new URLSearchParams({
+        center: `${lat},${lng}`,
+        zoom: String(DEFAULT_ZOOM),
+        size: STATIC_SIZE,
+        markers: `color:red|${lat},${lng}`,
+        key: GOOGLE_MAPS_API_KEY,
+      });
+      return `${base}?${params.toString()}`;
+    }
+
+    function buildMapsLink(lat, lng) {
+      return `https://www.google.com/maps?q=${encodeURIComponent(`${lat},${lng}`)}`;
+    }
+
     function updateOutputsFromResolved(parts, lat, lng, placeId = '') {
       const enderecoFormatado = formatAddressFromParts(parts);
       const mapaUrl = buildStaticMapUrl(lat, lng);
@@ -372,7 +325,7 @@
         mapa_url: mapaUrl,
         maps_link: mapsLink,
         place_id: placeId,
-        ver: 'mini-site-github-v2'
+        ver: 'mini-site-endereco-v3'
       };
 
       obsEl.value = enderecoFormatado;
@@ -382,9 +335,17 @@
       setStatus('Endereço localizado. Confira no mapa e toque em Confirmar endereço.', 'ok');
     }
 
+    function updateMap(lat, lng) {
+      const pos = { lat: Number(lat), lng: Number(lng) };
+      marker.setPosition(pos);
+      map.setCenter(pos);
+      map.setZoom(DEFAULT_ZOOM);
+      google.maps.event.trigger(map, 'resize');
+    }
+
     function resolveTypedAddress() {
       return new Promise((resolve, reject) => {
-        const typed = (autocompleteEl.value || autocompleteEl.getAttribute('value') || '').trim();
+        const typed = esc(addressInputEl.value);
         const numero = esc(numeroEl.value);
         const complemento = esc(complementoEl.value);
         const queryBase = [typed, numero].filter(Boolean).join(', ');
@@ -392,10 +353,6 @@
 
         if (!typed) {
           reject(new Error('Digite um endereço para continuar.'));
-          return;
-        }
-        if (!geocoder) {
-          reject(new Error('Geocoder não inicializado.'));
           return;
         }
 
@@ -407,7 +364,7 @@
           },
           (results, status) => {
             if (status !== 'OK' || !results || !results.length) {
-              reject(new Error('Não encontramos esse endereço. Tente selecionar uma sugestão mais específica.'));
+              reject(new Error('Não encontramos esse endereço. Tente informar rua, número e cidade.'));
               return;
             }
 
@@ -425,72 +382,93 @@
           }
         );
       });
-    },${lng}`)}`;
     }
 
-    function updateOutputs() {
-      if (!selectedPlace?.location) return;
-
-      const lat = Number(selectedPlace.location.lat()).toFixed(6);
-      const lng = Number(selectedPlace.location.lng()).toFixed(6);
-      const parts = extractPartsFromComponents(selectedPlace.addressComponents || []);
-      updateOutputsFromResolved(parts, lat, lng, selectedPlace.id || selectedPlace.placeId || '');
-    }
-
-    async function initMapAndAutocomplete() {
-      const { Map } = await google.maps.importLibrary('maps');
-      await google.maps.importLibrary('places');
-      const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
-      geocoder = new google.maps.Geocoder();
-
-      map = new Map(document.getElementById('map'), {
-        center: { lat: -30.0346, lng: -51.2177 },
-        zoom: 12,
-        mapId: 'DEMO_MAP_ID'
+    function initAutocomplete() {
+      autocomplete = new google.maps.places.Autocomplete(addressInputEl, {
+        componentRestrictions: { country: COUNTRY },
+        fields: ['address_components', 'formatted_address', 'geometry', 'place_id', 'name'],
+        types: ['address']
       });
 
-      marker = new AdvancedMarkerElement({
-        map,
-        position: { lat: -30.0346, lng: -51.2177 }
-      });
-
-      // Limita para Brasil
-      autocompleteEl.componentRestrictions = { country: COUNTRY };
-      autocompleteEl.locationBias = { radius: 50000, center: { lat: -30.0346, lng: -51.2177 } };
-      autocompleteEl.types = ['address'];
-
-      autocompleteEl.addEventListener('gmp-select', async ({ placePrediction }) => {
-        try {
-          const place = placePrediction.toPlace();
-          await place.fetchFields({
-            fields: ['id', 'displayName', 'formattedAddress', 'location', 'addressComponents']
-          });
-
-          selectedPlace = place;
-          const loc = place.location;
-          marker.position = loc;
-          map.setCenter(loc);
-          map.setZoom(DEFAULT_ZOOM);
-
-          updateOutputs();
-        } catch (error) {
-          console.error(error);
-          setStatus('Não foi possível carregar os detalhes do endereço.', 'err');
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        if (!place || !place.geometry || !place.geometry.location) {
+          selectedPlace = null;
+          return;
         }
+
+        selectedPlace = place;
+        const parts = extractPartsFromComponents(place.address_components || []);
+        const lat = Number(place.geometry.location.lat()).toFixed(6);
+        const lng = Number(place.geometry.location.lng()).toFixed(6);
+        updateMap(lat, lng);
+        updateOutputsFromResolved(parts, lat, lng, place.place_id || '');
+      });
+    }
+
+    async function initMiniSite() {
+      const center = { lat: -30.0346, lng: -51.2177 };
+      map = new google.maps.Map(document.getElementById('map'), {
+        center,
+        zoom: 12,
+        mapTypeControl: true,
+        streetViewControl: false,
+        fullscreenControl: true
+      });
+
+      marker = new google.maps.Marker({
+        position: center,
+        map
+      });
+
+      geocoder = new google.maps.Geocoder();
+      initAutocomplete();
+
+      addressInputEl.addEventListener('input', () => {
+        selectedPlace = null;
+        obsEl.value = '';
+        payloadEl.value = '';
+        currentPayload = null;
+        staticPreviewEl.style.display = 'none';
       });
     }
 
     numeroEl.addEventListener('input', () => {
-      if (selectedPlace) updateOutputs();
+      if (currentPayload) {
+        currentPayload.numero = esc(numeroEl.value);
+        obsEl.value = formatAddressFromParts({
+          route: currentPayload.rua,
+          streetNumber: currentPayload.numero,
+          neighborhood: currentPayload.bairro,
+          city: currentPayload.cidade,
+          state: currentPayload.uf,
+          postalCode: currentPayload.cep
+        });
+        currentPayload.endereco_formatado = obsEl.value;
+        payloadEl.value = JSON.stringify(currentPayload, null, 2);
+      }
     });
 
     complementoEl.addEventListener('input', () => {
-      if (selectedPlace) updateOutputs();
+      if (currentPayload) {
+        currentPayload.complemento = esc(complementoEl.value);
+        obsEl.value = formatAddressFromParts({
+          route: currentPayload.rua,
+          streetNumber: currentPayload.numero,
+          neighborhood: currentPayload.bairro,
+          city: currentPayload.cidade,
+          state: currentPayload.uf,
+          postalCode: currentPayload.cep
+        });
+        currentPayload.endereco_formatado = obsEl.value;
+        payloadEl.value = JSON.stringify(currentPayload, null, 2);
+      }
     });
 
     btnCopiar.addEventListener('click', async () => {
       if (!currentPayload) {
-        setStatus('Selecione um endereço antes de copiar.', 'err');
+        setStatus('Localize um endereço antes de copiar.', 'err');
         return;
       }
       try {
@@ -503,7 +481,7 @@
 
     btnAbrirMaps.addEventListener('click', () => {
       if (!currentPayload?.maps_link) {
-        setStatus('Selecione um endereço antes de abrir o mapa.', 'err');
+        setStatus('Localize um endereço antes de abrir o mapa.', 'err');
         return;
       }
       window.open(currentPayload.maps_link, '_blank', 'noopener,noreferrer');
@@ -511,30 +489,36 @@
 
     btnConfirmar.addEventListener('click', async () => {
       try {
-        if (selectedPlace?.location) {
-          updateOutputs();
-          setStatus('Endereço confirmado com sucesso.', 'ok');
-          return;
-        }
+        btnConfirmar.disabled = true;
+        btnConfirmar.textContent = 'Localizando...';
 
-        setStatus('Localizando endereço...', '');
-        const resolved = await resolveTypedAddress();
-        marker.position = { lat: Number(resolved.lat), lng: Number(resolved.lng) };
-        map.setCenter({ lat: Number(resolved.lat), lng: Number(resolved.lng) });
-        map.setZoom(DEFAULT_ZOOM);
-        updateOutputsFromResolved(resolved.parts, resolved.lat, resolved.lng, resolved.placeId);
-        setStatus('Endereço confirmado com sucesso.', 'ok');
+        if (selectedPlace && selectedPlace.geometry && selectedPlace.geometry.location) {
+          const parts = extractPartsFromComponents(selectedPlace.address_components || []);
+          const lat = Number(selectedPlace.geometry.location.lat()).toFixed(6);
+          const lng = Number(selectedPlace.geometry.location.lng()).toFixed(6);
+          updateMap(lat, lng);
+          updateOutputsFromResolved(parts, lat, lng, selectedPlace.place_id || '');
+          setStatus('Endereço confirmado com sucesso.', 'ok');
+        } else {
+          const resolved = await resolveTypedAddress();
+          updateMap(resolved.lat, resolved.lng);
+          updateOutputsFromResolved(resolved.parts, resolved.lat, resolved.lng, resolved.placeId);
+          setStatus('Endereço confirmado com sucesso.', 'ok');
+        }
       } catch (error) {
         console.error(error);
         setStatus(error.message || 'Não foi possível localizar esse endereço.', 'err');
+      } finally {
+        btnConfirmar.disabled = false;
+        btnConfirmar.textContent = 'Confirmar endereço';
       }
     });
 
-    window.initMiniSite = initMapAndAutocomplete;
+    window.initMiniSite = initMiniSite;
   </script>
 
   <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiZg6hvX1FsFBBk6cFHD6tr5bQiBWBF2Q&v=weekly&libraries=places&callback=initMiniSite"
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAiZg6hvX1FsFBBk6cFHD6tr5bQiBWBF2Q&libraries=places&callback=initMiniSite"
     async
     defer></script>
 </body>
